@@ -42,7 +42,7 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
 * [ ] User can also generate separate playlists based on genres
 * [ ] Users can create playlists together - using results of multiple people's questionnaires or playlists of multiple users
 * [ ] Users can write comments on playlists to friends
-* [ ] Users can see graphs about their common genres, songs, and questionnair answers.
+* [ ] Users can see graphs about their common genres, songs, and questionnaire answers.
 
 ### 2. Screen Archetypes
 
