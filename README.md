@@ -121,7 +121,7 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
 
 
 ### Networking
-[Add list of network requests by screen ]
+[Add list of network requests by screen]
 - Home Feed Screen
     - (Read/GET) Query all playlists where current user is the createdBy user
     - (Create/POST) Create a new like on a playlist if user likes it
@@ -136,5 +136,4 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
     - (Delete) Delete the like if user unlikes the playlist
 
 [Create basic snippets for each Parse network request]
-- s
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
