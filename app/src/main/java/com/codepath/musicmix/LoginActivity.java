@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -26,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1337;
     private static final String SCOPES = "user-read-recently-played,user-library-modify,user-read-email,user-read-private";
 
+    Button btnLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +37,20 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
 
-        authenticateSpotify();
+        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authenticateSpotify();
+
+                msharedPreferences = LoginActivity.this.getSharedPreferences("SPOTIFY", 0);
+                queue = Volley.newRequestQueue(LoginActivity.this);
+            }
+        });
+        /*authenticateSpotify();
 
         msharedPreferences = this.getSharedPreferences("SPOTIFY", 0);
-        queue = Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);*/
     }
 
     private void authenticateSpotify() {
@@ -63,11 +77,15 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("STARTING", "GOT AUTH TOKEN");
                     editor.apply();
                     //waitForUserInfo();
+                    Log.i("LoginActivity", "login success");
+                    Intent i = new Intent(this, MainActivity.class);
+                    startActivity(i);
                     break;
 
                 // Auth flow returned an error
                 case ERROR:
                     // Handle error response
+                    Log.e("LoginActivity", "Login failed");
                     break;
 
                 // Most likely auth flow was cancelled
@@ -76,4 +94,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
 }
