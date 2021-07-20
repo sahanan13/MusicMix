@@ -66,11 +66,11 @@ import java.util.List;
  * in the {@code onActivityResult} method of the activity that initiated it.</p>
  *
  * <p>
- * For login flow to work, LoginActivity needs to be added to the {@code AndroidManifest.xml}:
+ * For login flow to work, SpotifyConnectActivity needs to be added to the {@code AndroidManifest.xml}:
  *
  * <pre>{@code
  * <activity
- *         android:name="LoginActivity"
+ *         android:name="SpotifyConnectActivity"
  *         android:theme="@android:style/Theme.Translucent.NoTitleBar" />
  * }</pre>
  *
@@ -85,13 +85,13 @@ import java.util.List;
  * AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
  * }</pre>
  *
- * It is also possible to use {@code LoginActivity} from other component such as Fragments:
+ * It is also possible to use {@code SpotifyConnectActivity} from other component such as Fragments:
  * <pre>{@code
- * // To start LoginActivity from a Fragment:
+ * // To start SpotifyConnectActivity from a Fragment:
  * Intent intent = AuthorizationClient.createLoginActivityIntent(getActivity(), request);
  * startActivityForResult(intent, REQUEST_CODE);
  *
- * // To close LoginActivity
+ * // To close SpotifyConnectActivity
  * AuthorizationClient.stopLoginActivity(getActivity(), REQUEST_CODE);
  * }</pre>
  * <p>
@@ -260,9 +260,9 @@ public class AuthorizationClient {
         /**
          * Auth flow was cancelled before it could be completed.
          * This callbacks indicates that the auth flow was interrupted
-         * for example because of underlying LoginActivity was paused or stopped.
+         * for example because of underlying SpotifyConnectActivity was paused or stopped.
          * This is different from the situation when user completes the flow
-         * by closing LoginActivity (e.g. by pressing the back button).
+         * by closing SpotifyConnectActivity (e.g. by pressing the back button).
          */
         void onClientCancelled();
     }
@@ -283,21 +283,21 @@ public class AuthorizationClient {
     }
 
     /**
-     * Get an intent to open the LoginActivity.
+     * Get an intent to open the SpotifyConnectActivity.
      * This method can be used to open this activity from components different than
      * activities; for example Fragments.
      * <pre>{@code
-     * // To start LoginActivity from a Fragment:
+     * // To start SpotifyConnectActivity from a Fragment:
      * Intent intent = AuthorizationClient.createLoginActivityIntent(getActivity(), request);
      * startActivityForResult(intent, REQUEST_CODE);
      *
-     * // To close LoginActivity
+     * // To close SpotifyConnectActivity
      * AuthorizationClient.stopLoginActivity(getActivity(), REQUEST_CODE);
      * }</pre>
      *
-     * @param contextActivity A context activity for the LoginActivity.
+     * @param contextActivity A context activity for the SpotifyConnectActivity.
      * @param request         Authorization request
-     * @return The intent to open LoginActivity with.
+     * @return The intent to open SpotifyConnectActivity with.
      * @throws IllegalArgumentException if any of the arguments is null
      */
     public static Intent createLoginActivityIntent(Activity contextActivity, AuthorizationRequest request) {
@@ -307,14 +307,14 @@ public class AuthorizationClient {
     }
 
     /**
-     * Opens LoginActivity which performs authorization.
+     * Opens SpotifyConnectActivity which performs authorization.
      * The result of the authorization flow will be received by the
      * {@code contextActivity} in the {@code onActivityResult} callback.
      * The successful result of the authorization flow will contain an access token that can be used
      * to make calls to the Web API and/or to play music with Spotify.
      *
-     * @param contextActivity A context activity for the LoginActivity.
-     * @param requestCode     Request code for LoginActivity.
+     * @param contextActivity A context activity for the SpotifyConnectActivity.
+     * @param requestCode     Request code for SpotifyConnectActivity.
      * @param request         Authorization request
      * @throws IllegalArgumentException if any of the arguments is null
      */
@@ -324,11 +324,11 @@ public class AuthorizationClient {
     }
 
     /**
-     * Stops any running LoginActivity
+     * Stops any running SpotifyConnectActivity
      *
-     * @param contextActivity The activity that was used to launch LoginActivity
+     * @param contextActivity The activity that was used to launch SpotifyConnectActivity
      *                        with {@link #openLoginActivity(android.app.Activity, int, AuthorizationRequest)}
-     * @param requestCode     Request code that was used to launch LoginActivity
+     * @param requestCode     Request code that was used to launch SpotifyConnectActivity
      */
     public static void stopLoginActivity(Activity contextActivity, int requestCode) {
         contextActivity.finishActivity(requestCode);
@@ -347,7 +347,7 @@ public class AuthorizationClient {
 
     /**
      * Extracts {@link AuthorizationResponse}
-     * from the LoginActivity result.
+     * from the SpotifyConnectActivity result.
      *
      * @param resultCode Result code returned with the activity result.
      * @param intent     Intent received with activity result. Should contain a Uri with result data.
@@ -453,7 +453,7 @@ public class AuthorizationClient {
     /**
      * Authorization process was interrupted.
      * This can happen when auth flow is not completed
-     * but was cancelled e.g. when underlying LoginActivity
+     * but was cancelled e.g. when underlying SpotifyConnectActivity
      * was paused or stopped.
      */
     void cancel() {

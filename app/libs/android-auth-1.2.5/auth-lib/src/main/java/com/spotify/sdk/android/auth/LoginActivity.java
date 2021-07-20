@@ -46,9 +46,9 @@ public class LoginActivity extends Activity implements AuthorizationClient.Autho
     static final String RESPONSE_TYPE_CODE = "code";
 
     private static final String TAG = LoginActivity.class.getName();
-    private static final String NO_CALLER_ERROR = "Can't use LoginActivity with a null caller. " +
+    private static final String NO_CALLER_ERROR = "Can't use SpotifyConnectActivity with a null caller. " +
             "Possible reasons: calling activity has a singleInstance mode " +
-            "or LoginActivity is in a singleInstance/singleTask mode";
+            "or SpotifyConnectActivity is in a singleInstance/singleTask mode";
 
     private static final String NO_REQUEST_ERROR = "No authorization request";
 
@@ -206,8 +206,8 @@ public class LoginActivity extends Activity implements AuthorizationClient.Autho
 
     @Override
     public void onClientCancelled() {
-        // Called only when LoginActivity is destroyed and no other result is set.
-        Log.w(TAG, "Spotify Auth cancelled due to LoginActivity being finished");
+        // Called only when SpotifyConnectActivity is destroyed and no other result is set.
+        Log.w(TAG, "Spotify Auth cancelled due to SpotifyConnectActivity being finished");
         setResult(Activity.RESULT_CANCELED);
     }
 }

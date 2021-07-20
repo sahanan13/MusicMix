@@ -60,7 +60,7 @@ public class AuthorizationResponse implements Parcelable {
         ERROR("error"),
 
         /**
-         * Response doesn't contain data because auth flow was cancelled or LoginActivity killed.
+         * Response doesn't contain data because auth flow was cancelled or SpotifyConnectActivity killed.
          */
         EMPTY("empty"),
 

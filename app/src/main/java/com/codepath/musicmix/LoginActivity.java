@@ -3,96 +3,78 @@ package com.codepath.musicmix;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.spotify.sdk.android.authentication.AuthenticationClient;
-import com.spotify.sdk.android.authentication.AuthenticationRequest;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
+// A login screen that offers login via username/password
 public class LoginActivity extends AppCompatActivity {
 
-    private SharedPreferences.Editor editor;
-    private SharedPreferences msharedPreferences;
-
-    private RequestQueue queue;
-
-    private static final String CLIENT_ID = "d05768ed70704c4997b6097f446682c8";
-    private static final String REDIRECT_URI = "com.codepath.musicmix://callback";
-    private static final int REQUEST_CODE = 1337;
-    private static final String SCOPES = "user-read-recently-played,user-library-modify,user-read-email,user-read-private";
-
-    Button btnLogin;
+    public static final String TAG = "LoginActivity";
+    private EditText etUsername;
+    private EditText etPassword;
+    private Button btnLogin;
+    private Button btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
 
+        if (ParseUser.getCurrentUser() != null) {
+            goMainActivity();
+        }
+
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticateSpotify();
-
-                msharedPreferences = LoginActivity.this.getSharedPreferences("SPOTIFY", 0);
-                queue = Volley.newRequestQueue(LoginActivity.this);
+                Log.i(TAG, "onClick login button");
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+                loginUser(username, password);
             }
         });
-        /*authenticateSpotify();
 
-        msharedPreferences = this.getSharedPreferences("SPOTIFY", 0);
-        queue = Volley.newRequestQueue(this);*/
-    }
-
-    private void authenticateSpotify() {
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{SCOPES});
-        AuthenticationRequest request = builder.build();
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
-    }
-
-    // Receiving the token if request was successful
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-
-            switch (response.getType()) {
-                // Response was successful and contains auth token
-                case TOKEN:
-                    editor = getSharedPreferences("SPOTIFY", 0).edit();
-                    editor.putString("token", response.getAccessToken());
-                    Log.d("STARTING", "GOT AUTH TOKEN");
-                    editor.apply();
-                    //waitForUserInfo();
-                    Log.i("LoginActivity", "login success");
-                    Intent i = new Intent(this, MainActivity.class);
-                    startActivity(i);
-                    break;
-
-                // Auth flow returned an error
-                case ERROR:
-                    // Handle error response
-                    Log.e("LoginActivity", "Login failed");
-                    break;
-
-                // Most likely auth flow was cancelled
-                default:
-                    // Handle other cases
+        btnSignup = findViewById(R.id.btnSignup);
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick Sign up button");
+                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(intent);
             }
-        }
+        });
     }
 
+    private void loginUser(String username, String password) {
+        Log.i(TAG, "Attempting to login user " + username);
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with login", e);
+                    return;
+                }
+                // Navigate to the main activity if the user has signed in properly
+                goMainActivity();
+                Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void goMainActivity() {
+        Intent i = new Intent(this, SpotifyConnectActivity.class);
+        startActivity(i);
+        finish();
+    }
 }
