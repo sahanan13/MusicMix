@@ -53,10 +53,6 @@ public class SpotifyConnectActivity extends AppCompatActivity {
                 queue = Volley.newRequestQueue(SpotifyConnectActivity.this);
             }
         });
-        /*authenticateSpotify();
-
-        msharedPreferences = this.getSharedPreferences("SPOTIFY", 0);
-        queue = Volley.newRequestQueue(this);*/
     }
 
     @Override
@@ -108,11 +104,7 @@ public class SpotifyConnectActivity extends AppCompatActivity {
                     Log.d("STARTING", "GOT AUTH TOKEN");
                     editor.apply();
                     waitForUserInfo();
-                    //Log.i("SpotifyConnectActivity", "login success");
-                    //Intent i = new Intent(this, MainActivity.class);
-                    //startActivity(i);
                     break;
-
                 // Auth flow returned an error
                 case ERROR:
                     // Handle error response
