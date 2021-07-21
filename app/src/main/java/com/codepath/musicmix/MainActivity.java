@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.musicmix.fragments.HomeFragment;
+import com.codepath.musicmix.fragments.ProfileFragment;
+import com.codepath.musicmix.fragments.QuestionnaireFragment;
 import com.codepath.musicmix.models.Song;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
@@ -43,19 +46,19 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         Toast.makeText(MainActivity.this, "Home!", Toast.LENGTH_SHORT).show();
-                        //fragment = new PostsFragment();
+                        fragment = new HomeFragment();
                         break;
                     case R.id.action_questionnaire:
                         Toast.makeText(MainActivity.this, "Questionnaire!", Toast.LENGTH_SHORT).show();
-                        //fragment = new ComposeFragment();
+                        fragment = new QuestionnaireFragment();
                         break;
                     case R.id.action_profile:
                     default:
                         Toast.makeText(MainActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
-                        //fragment = new ProfileFragment();
+                        fragment = new ProfileFragment();
                         break;
                 }
-                //fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }
         });
