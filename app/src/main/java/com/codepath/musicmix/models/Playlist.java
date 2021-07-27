@@ -1,12 +1,19 @@
 package com.codepath.musicmix.models;
 
-public class Song {
+import java.util.ArrayList;
+
+public class Playlist {
     private String id;
     private String name;
+    private ArrayList<Song> songs = new ArrayList<Song>();
 
-    public Song(String id, String name) {
-        this.name = name;
+    public Playlist(String id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public void addSong(Song newSong) {
+        songs.add(newSong);
     }
 
     public String getId() {
@@ -24,8 +31,6 @@ public class Song {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String toString() {
-        return "Name: " + name + "| id: " + id;
-    }
 }
+
+

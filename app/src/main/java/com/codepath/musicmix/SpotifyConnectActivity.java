@@ -32,7 +32,9 @@ public class SpotifyConnectActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "d05768ed70704c4997b6097f446682c8";
     private static final String REDIRECT_URI = "com.codepath.musicmix://callback";
     private static final int REQUEST_CODE = 1337;
-    private static final String SCOPES = "user-read-recently-played,user-library-modify,user-read-email,user-read-private";
+    private static final String SCOPES = "user-read-recently-played,user-library-modify,user-read-email,user-read-private,playlist-modify-public,"
+            +"playlist-modify-private,user-read-playback-position,playlist-read-private,user-library-read,user-top-read,playlist-read-collaborative,"
+            +"ugc-image-upload,user-follow-read,user-follow-modify,user-read-playback-state,user-modify-playback-state,user-read-currently-playing";
 
     Button btnConnectSpotify;
 
@@ -134,6 +136,7 @@ public class SpotifyConnectActivity extends AppCompatActivity {
     private void startMainActivity() {
         Intent newIntent = new Intent(SpotifyConnectActivity.this, MainActivity.class);
         startActivity(newIntent);
+        finish();
     }
 
 }
