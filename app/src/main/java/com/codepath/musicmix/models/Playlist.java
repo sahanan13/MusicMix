@@ -5,15 +5,15 @@ import java.util.ArrayList;
 public class Playlist {
     private String id;
     private String name;
-    private ArrayList<Song> songs = new ArrayList<Song>();
+    private ArrayList<Song> songs;
 
     public Playlist(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public void addSong(Song newSong) {
-        songs.add(newSong);
+    public void addSongs(ArrayList<Song> newSongs) {
+        songs = newSongs;
     }
 
     public String getId() {

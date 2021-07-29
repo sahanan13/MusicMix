@@ -62,7 +62,7 @@ public class QuestionnaireFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        songService = new SongService(getActivity().getApplicationContext());
+        //songService = new SongService(getActivity().getApplicationContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("SPOTIFY", 0);
 
         mainActivity = (MainActivity) getActivity();
@@ -110,6 +110,8 @@ public class QuestionnaireFragment extends Fragment {
                 radioGroup4.clearCheck();
                 radioGroup5.clearCheck();
 
+                songService = new SongService(getActivity().getApplicationContext());
+
                 // Create playlist / generate songs
 
                 //endpoint: keyword: Happy
@@ -134,17 +136,17 @@ public class QuestionnaireFragment extends Fragment {
                 songService.createPlaylist(userId);
                 Log.d(TAG, "Questionnaire: "+ userId);
 
-                //String arraySongs = "";
-                //Log.d(TAG, "" + playlistTracks.size());
+                /*String arraySongs = "";
+                Log.d(TAG, "" + playlistTracks.size());
 
-                /*for (int i=0; i<playlistTracks.size(); i++) {
+                for (int i=0; i<playlistTracks.size(); i++) {
                     Song curr = playlistTracks.get(i);
 
                     arraySongs += curr + ", ";
 //                    System.out.println(curr);
-                }*/
+                }
 
-                //Log.d(TAG, arraySongs);
+                Log.d(TAG, arraySongs);*/
 
             }
         });
@@ -155,11 +157,13 @@ public class QuestionnaireFragment extends Fragment {
         return getApplication().getApplicationContext();
     }*/
 
-    private void setSongs(ArrayList<Song> songList) {
+    // adds songs for Playlist in this fragment
+    // also calls method to add songs to playlist
+    private void addNewSongs(ArrayList<Song> songList) {
         playlistTracks = songList;
         numSongs = playlistTracks.size();
-        Log.d(TAG, "setSongs numSongs: " + numSongs);
-
+        Log.d(TAG, "addSongs numSongs: " + numSongs);
+        //songService.addSongsToPlaylist(playlistTracks);
     }
     //
     private void getTracks() {
@@ -175,7 +179,11 @@ public class QuestionnaireFragment extends Fragment {
                 //playlistTracks = songService.getSongs();
                 //numSongs = songService.getSongs().size();
                 //Log.d(TAG, "getTracks numSongs: " + numSongs);
-                setSongs(songService.getSongs());
+                //addNewSongs(songService.getSongs());
+                //songService.addSongsToPlaylist(songService.getSongs());
+                //
+                // songService.createPlaylist(userId);
+                //songService.addSongsToPlaylist();
             }
         });
         /*if (songService.getSongs() == null) {
