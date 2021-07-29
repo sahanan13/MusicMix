@@ -111,11 +111,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Piano" />
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guitar" />
+                android:text="Instrumentals" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -154,11 +150,11 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About love" />
+                android:text="Cheerful" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About pain" />
+                android:text="Sorrowful" />
         </RadioGroup>
 
         <TextView
@@ -169,7 +165,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:text="5. Which genre of movies appeal to you at the moment?" />
+            android:text="5. On a scale of 1-5, how energetic do you feel today?" />
 
         <RadioGroup
             android:id="@+id/radioGroup5"
@@ -177,27 +173,27 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textView5"
             android:layout_marginStart="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Romance" />
+                android:text="1" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Coming-of-age" />
+                android:text="2" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Action" />
+                android:text="3" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Animation" />
+                android:text="4" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Musicals" />
+                android:text="5" />
         </RadioGroup>
 
         <Button

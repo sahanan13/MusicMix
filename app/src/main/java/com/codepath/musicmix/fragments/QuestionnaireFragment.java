@@ -22,6 +22,7 @@ import com.codepath.musicmix.MainActivity;
 import com.codepath.musicmix.R;
 import com.codepath.musicmix.VolleyCallBack;
 import com.codepath.musicmix.connectors.SongService;
+import com.codepath.musicmix.models.Options;
 import com.codepath.musicmix.models.Song;
 import com.parse.ParseUser;
 
@@ -79,75 +80,84 @@ public class QuestionnaireFragment extends Fragment {
         radioGroup5 = view.findViewById(R.id.radioGroup5);
         btnSubmit = view.findViewById(R.id.btnSubmit);
 
+        //getting user id
         userId = sharedPreferences.getString("userid", "none");
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "StartSubmit");
-                int radioId1 = radioGroup1.getCheckedRadioButtonId();
-                radioButton1 = view.findViewById(radioId1);
-                int radioId2 = radioGroup2.getCheckedRadioButtonId();
-                radioButton2 = view.findViewById(radioId2);
-                int radioId3 = radioGroup3.getCheckedRadioButtonId();
-                radioButton3 = view.findViewById(radioId3);
-                int radioId4 = radioGroup4.getCheckedRadioButtonId();
-                radioButton4 = view.findViewById(radioId4);
-                int radioId5 = radioGroup5.getCheckedRadioButtonId();
-                radioButton5 = view.findViewById(radioId5);
-                option1 = (String) radioButton1.getText();
-                option2 = (String) radioButton2.getText();
-                option3 = (String) radioButton3.getText();
-                option4 = (String) radioButton4.getText();
-                option5 = (String) radioButton5.getText();
-                Toast.makeText(getContext(), "Selected buttons: " + option1 + " " + option2 +
-                        " " + option3 + " " + option4 + " " + option5, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Selected buttons: " + option1 + " " + option2 + " " + option3
-                        + " " + option4 + " " + option5);
-                radioGroup1.clearCheck();
-                radioGroup2.clearCheck();
-                radioGroup3.clearCheck();
-                radioGroup4.clearCheck();
-                radioGroup5.clearCheck();
 
-                songService = new SongService(getActivity().getApplicationContext());
-
-                // Create playlist / generate songs
-
-                //endpoint: keyword: Happy
-                //https://api.spotify.com/v1/search?q=Happy&type=track&market=US&limit=10" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQAmR2-ev8C_2tmlydDfLrbyPIlvfjZ5x98h7U9YUcuGFIDHn59T0TNjLauLFrxtzt7hN48PZK-M9Uia3rWIVrJJATvcl3zQUkjn_pFcvnBeJ37uWTFTXLZcatZIdl4U5MSOisRR1xu4cWE8O5gjDy38WwSrL0f7v_C1zngkNKbW38xW788kugRFAk3vXpco1UkLCTX5Zl_ouzuB_As10qLrtbayJdR5eY8HzXo6bQty-90HtA8zoKn0HKBCS1jjC7FW5TiKzySbsO_5ZNQ
-
-
-                // Create empty playlist
-
-                // get songs from search
-
-                // put songs in playlist
-
-                //check if playlist is there
-
-                // display playlist
-
-                Log.d(TAG, (sharedPreferences.getString("userid", "No User")));
-
-                getTracks();
-                //Log.d(TAG, "numSongs: " + numSongs);
-
-                songService.createPlaylist(userId);
-                Log.d(TAG, "Questionnaire: "+ userId);
-
-                /*String arraySongs = "";
-                Log.d(TAG, "" + playlistTracks.size());
-
-                for (int i=0; i<playlistTracks.size(); i++) {
-                    Song curr = playlistTracks.get(i);
-
-                    arraySongs += curr + ", ";
-//                    System.out.println(curr);
+                // to check if all questions are answered
+                if (radioGroup1.getCheckedRadioButtonId() == -1 || radioGroup2.getCheckedRadioButtonId() == -1 || radioGroup3.getCheckedRadioButtonId() == -1 ||
+                        radioGroup4.getCheckedRadioButtonId() == -1 || radioGroup5.getCheckedRadioButtonId() == -1)
+                {
+                    Toast.makeText(getContext(), "Please make sure you answer all questions!", Toast.LENGTH_SHORT).show();
                 }
+                else {
+                    // all of the radio buttons are checked
 
-                Log.d(TAG, arraySongs);*/
+                    int radioId1 = radioGroup1.getCheckedRadioButtonId();
+                    radioButton1 = view.findViewById(radioId1);
+                    int radioId2 = radioGroup2.getCheckedRadioButtonId();
+                    radioButton2 = view.findViewById(radioId2);
+                    int radioId3 = radioGroup3.getCheckedRadioButtonId();
+                    radioButton3 = view.findViewById(radioId3);
+                    int radioId4 = radioGroup4.getCheckedRadioButtonId();
+                    radioButton4 = view.findViewById(radioId4);
+                    int radioId5 = radioGroup5.getCheckedRadioButtonId();
+                    radioButton5 = view.findViewById(radioId5);
+                    option1 = (String) radioButton1.getText();
+                    option2 = (String) radioButton2.getText();
+                    option3 = (String) radioButton3.getText();
+                    option4 = (String) radioButton4.getText();
+                    option5 = (String) radioButton5.getText();
+                    Toast.makeText(getContext(), "Selected buttons: " + option1 + " " + option2 +
+                            " " + option3 + " " + option4 + " " + option5, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Selected buttons: " + option1 + " " + option2 + " " + option3
+                            + " " + option4 + " " + option5);
+                    radioGroup1.clearCheck();
+                    radioGroup2.clearCheck();
+                    radioGroup3.clearCheck();
+                    radioGroup4.clearCheck();
+                    radioGroup5.clearCheck();
 
+                    songService = new SongService(getActivity().getApplicationContext());
+
+                    // Create playlist / generate songs
+
+
+                    // Create empty playlist
+
+                    // get songs from search
+
+                    // put songs in playlist
+
+                    //check if playlist is there
+
+                    // display playlist
+
+                    Log.d(TAG, (sharedPreferences.getString("userid", "No User")));
+
+                    Options optionsObject = new Options(option1, option2, option3, option4, option5);
+                    getTracks(optionsObject, userId);
+                    //Log.d(TAG, "numSongs: " + numSongs);
+
+                    //songService.createPlaylist(userId);
+                    Log.d(TAG, "Questionnaire: " + userId);
+
+                    /*String arraySongs = "";
+                    Log.d(TAG, "" + playlistTracks.size());
+
+                    for (int i=0; i<playlistTracks.size(); i++) {
+                        Song curr = playlistTracks.get(i);
+
+                        arraySongs += curr + ", ";
+    //                    System.out.println(curr);
+                    }
+
+                    Log.d(TAG, arraySongs);*/
+                }
             }
         });
 
@@ -166,13 +176,17 @@ public class QuestionnaireFragment extends Fragment {
         //songService.addSongsToPlaylist(playlistTracks);
     }
     //
-    private void getTracks() {
+    private void getTracks(Options optionsObject, String userId) {
         Log.d(TAG, "getTracks called");
         /*ArrayList<Song> tempArraylist = songService.getPlaylistTracks(() -> {
             playlistTracks = songService.getSongs();
         });*/
         //Log.d(TAG, "" + tempArraylist.size());
-        songService.getPlaylistTracks(new VolleyCallBack() {
+
+        songService.getPlaylistTracks(userId, optionsObject);
+
+        /*
+        songService.getPlaylistTracks(userId, option1, option2, option3, option4, option5, new VolleyCallBack() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "Volley Callback Success!");
@@ -185,7 +199,7 @@ public class QuestionnaireFragment extends Fragment {
                 // songService.createPlaylist(userId);
                 //songService.addSongsToPlaylist();
             }
-        });
+        });*/
         /*if (songService.getSongs() == null) {
             Log.d(TAG, "Null array");
         } else if (songService.getSongs().isEmpty()) {

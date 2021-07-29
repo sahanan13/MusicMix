@@ -6,10 +6,12 @@ public class Playlist {
     private String id;
     private String name;
     private ArrayList<Song> songs;
+    private Options options;
 
-    public Playlist(String id, String name) {
+    public Playlist(String id, String name, Options optionsObject) {
         this.id = id;
         this.name = name;
+        this.options = optionsObject;
     }
 
     public void addSongs(ArrayList<Song> newSongs) {
@@ -30,6 +32,22 @@ public class Playlist {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(ArrayList<Song> songs) {
+        this.songs = songs;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
     }
 }
 
