@@ -1,21 +1,28 @@
 package com.codepath.musicmix.models;
 
+import com.parse.ParseUser;
+
+import org.parceler.Parcel;
+
+@Parcel
 public class Options {
     private String option1;
     private String option2;
     private String option3;
     private String option4;
     private String option5;
+    private ParseUser currentUser;
 
     // default constructor
     public Options() {}
 
-    public Options(String option1, String option2, String option3, String option4, String option5) {
+    public Options(String option1, String option2, String option3, String option4, String option5, ParseUser currentUser) {
         this.option1 = option1;
         this.option2 = option2;
         this.option3 = option3;
         this.option4 = option4;
         this.option5 = option5;
+        this.currentUser = currentUser;
     }
 
     public String getOption1() {
@@ -56,6 +63,14 @@ public class Options {
 
     public void setOption5(String option5) {
         this.option5 = option5;
+    }
+
+    public ParseUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(ParseUser currentUser) {
+        this.currentUser = currentUser;
     }
 
     // testing methods

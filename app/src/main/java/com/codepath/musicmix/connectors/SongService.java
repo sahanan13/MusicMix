@@ -3,6 +3,7 @@ package com.codepath.musicmix.connectors;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -13,9 +14,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.codepath.musicmix.MusicMixAlgorithmConstants;
 import com.codepath.musicmix.VolleyCallBack;
+import com.codepath.musicmix.fragments.QuestionnaireFragment;
 import com.codepath.musicmix.models.Options;
 import com.codepath.musicmix.models.Playlist;
 import com.codepath.musicmix.models.Song;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,6 +133,7 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
 
+    //To DO: combine get Tracks - add endpoint as a parameter
     public ArrayList<Song> getHappyTracks(final VolleyCallBack callBack) {
         String endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -914,7 +919,12 @@ public class SongService implements MusicMixAlgorithmConstants {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "String Response : "+ response.toString());
                         try {
-                            playlist = new Playlist(response.getString("id"), name, optionsObject);
+                            playlist = new Playlist();
+                            //playlist = new Playlist(response.getString("id"), name, optionsObject);
+                            playlist.setId(response.getString("id"));
+                            playlist.setName(name);
+                            playlist.setOptions(optionsObject);
+                            playlist.setUser(optionsObject.getCurrentUser());
                             addSongsToPlaylist();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -941,7 +951,7 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
     public void addSongsToPlaylist() {
-        playlist.addSongs(songs);
+        playlist.setSongs(songs);
         JSONObject object = new JSONObject();
 
         String uriList = "";
@@ -961,6 +971,24 @@ public class SongService implements MusicMixAlgorithmConstants {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "String Response : "+ response.toString());
+                        playlist.setNumSongs(String.valueOf(songs.size()));
+                        playlist.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Log.e(TAG, "Error while saving", e);
+                                    Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+                                }
+                                Log.i(TAG, "Playlist save was successful!!");
+                                //etDescription.setText("");
+                                //ivPostImage.setImageResource(0);
+                                //context.getActivity().goHomeFragment();
+                                //QuestionnaireFragment.FragmengoHomet();
+                                //context.goHome();
+
+
+                            }
+                        });
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -92,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void goHome() {
+        fragmentManager.beginTransaction().replace(R.id.flContainer, new HomeFragment()).commit();
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
+    }
+
 }
 
 

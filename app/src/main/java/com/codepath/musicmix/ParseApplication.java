@@ -2,7 +2,9 @@ package com.codepath.musicmix;
 
 import android.app.Application;
 
+import com.codepath.musicmix.models.Playlist;
 import com.parse.Parse;
+import com.parse.ParseObject;
 
 public class ParseApplication extends Application {
 
@@ -12,6 +14,9 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         // Register your parse models
+
+        ParseObject.registerSubclass(Playlist.class);
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("X1yrOT63fuxupDkdQ4yYLVC57P7hOGjL3oltuQQ4")
                 .clientKey("BRbx2kNSnuI373lAqz0Z61IvvSf2DSdpLtFlbqy4")

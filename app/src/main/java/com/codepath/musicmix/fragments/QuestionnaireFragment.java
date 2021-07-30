@@ -124,90 +124,29 @@ public class QuestionnaireFragment extends Fragment {
 
                     songService = new SongService(getActivity().getApplicationContext());
 
-                    // Create playlist / generate songs
-
-
-                    // Create empty playlist
-
-                    // get songs from search
-
-                    // put songs in playlist
-
-                    //check if playlist is there
-
-                    // display playlist
-
                     Log.d(TAG, (sharedPreferences.getString("userid", "No User")));
 
-                    Options optionsObject = new Options(option1, option2, option3, option4, option5);
+                    //creating object for user's answers
+                    ParseUser currentUser = ParseUser.getCurrentUser();
+                    Options optionsObject = new Options(option1, option2, option3, option4, option5, currentUser);
                     getTracks(optionsObject, userId);
-                    //Log.d(TAG, "numSongs: " + numSongs);
-
-                    //songService.createPlaylist(userId);
                     Log.d(TAG, "Questionnaire: " + userId);
 
-                    /*String arraySongs = "";
-                    Log.d(TAG, "" + playlistTracks.size());
-
-                    for (int i=0; i<playlistTracks.size(); i++) {
-                        Song curr = playlistTracks.get(i);
-
-                        arraySongs += curr + ", ";
-    //                    System.out.println(curr);
-                    }
-
-                    Log.d(TAG, arraySongs);*/
                 }
             }
         });
 
     }
 
-    /*public static Context getContext() {
-        return getApplication().getApplicationContext();
-    }*/
 
-    // adds songs for Playlist in this fragment
-    // also calls method to add songs to playlist
-    private void addNewSongs(ArrayList<Song> songList) {
-        playlistTracks = songList;
-        numSongs = playlistTracks.size();
-        Log.d(TAG, "addSongs numSongs: " + numSongs);
-        //songService.addSongsToPlaylist(playlistTracks);
-    }
-    //
+    //method to get tracks and create playlist
     private void getTracks(Options optionsObject, String userId) {
         Log.d(TAG, "getTracks called");
-        /*ArrayList<Song> tempArraylist = songService.getPlaylistTracks(() -> {
-            playlistTracks = songService.getSongs();
-        });*/
-        //Log.d(TAG, "" + tempArraylist.size());
+        songService.getPlaylistTracks(userId, optionsObject); //synchonous callback
+    }
 
-        songService.getPlaylistTracks(userId, optionsObject);
-
-        /*
-        songService.getPlaylistTracks(userId, option1, option2, option3, option4, option5, new VolleyCallBack() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Volley Callback Success!");
-                //playlistTracks = songService.getSongs();
-                //numSongs = songService.getSongs().size();
-                //Log.d(TAG, "getTracks numSongs: " + numSongs);
-                //addNewSongs(songService.getSongs());
-                //songService.addSongsToPlaylist(songService.getSongs());
-                //
-                // songService.createPlaylist(userId);
-                //songService.addSongsToPlaylist();
-            }
-        });*/
-        /*if (songService.getSongs() == null) {
-            Log.d(TAG, "Null array");
-        } else if (songService.getSongs().isEmpty()) {
-            Log.d(TAG, "Empty Array");
-        }
-        else {
-            Log.d(TAG, "" + songService.getSongs().size());
-        }*/
+    public void goHomeFragment() {
+        mainActivity.goHome();
     }
 
 }
