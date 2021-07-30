@@ -27,7 +27,7 @@ public interface MusicMixAlgorithmConstants {
 
     // Algorithm constants
     public static final double RELAXING_DANCEABILITY = 0.3;
-    public static final double PARTYING_DANCEABILITY = 0.6; //0.7
+    public static final double PARTYING_DANCEABILITY = 0.7;
     public static final double EXERCISING_DANCEABILITY_LOW = 0.5;
     public static final double EXERCISING_DANCEABILITY_HIGH = 0.7;
     public static final double WORKING_DANCEABILITY_LOW = 0.3;
