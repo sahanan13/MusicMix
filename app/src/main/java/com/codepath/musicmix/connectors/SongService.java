@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -12,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.codepath.musicmix.MainActivity;
 import com.codepath.musicmix.MusicMixAlgorithmConstants;
 import com.codepath.musicmix.VolleyCallBack;
 import com.codepath.musicmix.fragments.QuestionnaireFragment;
@@ -53,30 +56,39 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
     public void getPlaylistTracks(String userId, Options optionsObject) {
+        String endpoint;
+        String userChoice;
         if (optionsObject.getOption1().equals(OPTION_HAPPY)) {
-            getHappyTracks(() -> {
+            endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
+            userChoice = "Happy";
+            /*getHappyTracks(() -> {
                 Log.d(TAG, "getHappyTracks Success!");
                 option2Filter(optionsObject, userId);
-            });
+            });*/
         } else if (optionsObject.getOption1().equals(OPTION_ANGRY)) {
-            getAngryTracks(() -> {
-                Log.d(TAG, "getAngryTracks Success!");
-                option2Filter(optionsObject, userId);
-            });
+            endpoint = "https://api.spotify.com/v1/search?q=angry&type=track&market=US&limit=50&offset=0";
+            userChoice = "Angry";
         } else if (optionsObject.getOption1().equals(OPTION_SAD)) {
-            getSadTracks(() -> {
-                Log.d(TAG, "getSadTracks Success!");
-                option2Filter(optionsObject, userId);
-            });
+            endpoint = "https://api.spotify.com/v1/search?q=sad&type=track&market=US&limit=50&offset=0";
+            userChoice = "Sad";
         } else {                //Nervous
-            getNervousTracks(() -> {
-                Log.d(TAG, "getNervousTracks Success!");
-                option2Filter(optionsObject, userId);
-            });
+            endpoint = "https://api.spotify.com/v1/search?q=nervous&type=track&market=US&limit=50&offset=0";
+            userChoice = "Nervous";
         }
+        getTracks(endpoint, new VolleyCallBack() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, userChoice + " getTracks Success!");
+                addAudioFeatures(0, 49, new VolleyCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        option2Filter(optionsObject, userId);
+                    }
+                });
+                //option2Filter(optionsObject, userId);
+            }
+        });
 
-        //createPlaylist(userId);
-        //return songs;
         return;
     }
 
@@ -95,6 +107,7 @@ public class SongService implements MusicMixAlgorithmConstants {
             filterWorkingTracks(optionsObject, userId);
             Log.d(TAG, "Working Success!");
         }
+        option3Filter(optionsObject, userId);
     }
 
     private void option3Filter(Options optionsObject, String userId) {
@@ -109,6 +122,7 @@ public class SongService implements MusicMixAlgorithmConstants {
             filterVocalTracks(optionsObject, userId);
             Log.d(TAG, "Vocal Success!");
         }
+        option4Filter(optionsObject, userId);
     }
 
     private void option4Filter(Options optionsObject, String userId) {
@@ -126,16 +140,17 @@ public class SongService implements MusicMixAlgorithmConstants {
             filterSorrowfulTracks(optionsObject, userId);
             Log.d(TAG, "Sorrowful Success!");
         }
+        option5Filter(optionsObject, userId);
     }
 
     private void option5Filter(Options optionsObject, String userId) {
         filterEnergyTracks(optionsObject, userId);
+        createPlaylist(optionsObject, userId);
     }
 
 
-    //To DO: combine get Tracks - add endpoint as a parameter
-    public ArrayList<Song> getHappyTracks(final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
+    public ArrayList<Song> getTracks(String endpoint, final VolleyCallBack callBack) {
+        //String endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, endpoint, null, response -> {
                     JSONObject jsonObject = response.optJSONObject("tracks");
@@ -167,18 +182,44 @@ public class SongService implements MusicMixAlgorithmConstants {
         return songs;
     }
 
-    public ArrayList<Song> getAngryTracks(final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/search?q=angry&type=track&market=US&limit=50&offset=0";
+    private void addAudioFeatures(int indexStart, int indexEnd, final VolleyCallBack callBack) {
+        //https://api.spotify.com/v1/audio-features?ids=60nZcImufyMA1MKQY3dcCH%2C5kNe7PE09d6Kvw5pAsx23n%2C0INUE1K7cEiE8VH63Rv5RJ
+        // ^^ 3 songs
+
+        String idList = "";
+        for(int i = indexStart; i <= indexEnd; i++)
+        {
+            String songId = (songs.get(i)).getId();
+            if (i != indexEnd) {
+                idList += songId + "%2C";
+            }
+        }
+
+        Log.d(TAG, "Song id list: " +idList);
+        String endpoint = "https://api.spotify.com/v1/audio-features?ids=" + idList;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, endpoint, null, response -> {
-                    //Gson gson = new Gson();
-                    JSONObject jsonObject = response.optJSONObject("tracks");
-                    JSONArray jsonArray = jsonObject.optJSONArray("items");
+                    JSONArray jsonArray = response.optJSONArray("audio_features");
                     for (int n = 0; n < jsonArray.length(); n++) {
                         try {
                             JSONObject object = jsonArray.getJSONObject(n);
-                            songs.add(new Song(object.getString("id"), object.getString("name"), object.getString("uri")));
-                            Log.d(TAG, songs.get(songs.size()-1).toString());
+                            double danceability = object.optDouble("danceability");
+                            double instrumentalness = object.optDouble("instrumentalness");
+                            double acousticness = object.optDouble("acousticness");
+                            double tempo = object.optDouble("tempo");
+                            double loudness = object.optDouble("loudness");
+                            double valence = object.optDouble("valence");
+                            double energy = object.optDouble("energy");
+                            Log.d(TAG, "Song array size audioFeatures: " + songs.size());
+                            Song currentSong = songs.get(n+indexStart);
+                            currentSong.setDanceability(danceability);
+                            currentSong.setInstrumentalness(instrumentalness);
+                            currentSong.setAcousticness(acousticness);
+                            currentSong.setTempo(tempo);
+                            currentSong.setLoudness(loudness);
+                            currentSong.setValence(valence);
+                            currentSong.setEnergy(energy);
+                            Log.d(TAG, "currentSong" + currentSong);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -194,80 +235,34 @@ public class SongService implements MusicMixAlgorithmConstants {
                 String token = sharedPreferences.getString("token", "");
                 String auth = "Bearer " + token;
                 headers.put("Authorization", auth);
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
                 return headers;
             }
         };
         queue.add(jsonObjectRequest);
-        return songs;
+        return;
     }
 
-    public ArrayList<Song> getSadTracks(final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/search?q=sad&type=track&market=US&limit=50&offset=0";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    JSONObject jsonObject = response.optJSONObject("tracks");
-                    JSONArray jsonArray = jsonObject.optJSONArray("items");
-                    for (int n = 0; n < jsonArray.length(); n++) {
-                        try {
-                            JSONObject object = jsonArray.getJSONObject(n);
-                            songs.add(new Song(object.getString("id"), object.getString("name"), object.getString("uri")));
-                            Log.d(TAG, songs.get(songs.size()-1).toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                return headers;
+    //filtering through option 2
+    private void filterRelaxingTracks(Options optionsObject, String userId) {
+        Log.d(TAG, "in filterRelaxingTracks");
+        selectedSongs = new ArrayList<Song>();
+        for (int i = 0; i < songs.size(); i++) {
+            Song currentSong = songs.get(i);
+            double danceability = currentSong.getDanceability();
+            if (danceability < RELAXING_DANCEABILITY) {
+                selectedSongs.add(currentSong);
+                //Log.d(TAG, "Relaxing song: " + currentSong.getName());
+            } else {
+                Log.d(TAG, "Not relaxing song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
-        return songs;
+        }
+        songs = selectedSongs;
+        return;
     }
 
-    public ArrayList<Song> getNervousTracks(final VolleyCallBack callBack) {
-        //String endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=20";
-        String endpoint = "https://api.spotify.com/v1/search?q=nervous&type=track&market=US&limit=50&offset=0";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    JSONObject jsonObject = response.optJSONObject("tracks");
-                    JSONArray jsonArray = jsonObject.optJSONArray("items");
-                    for (int n = 0; n < jsonArray.length(); n++) {
-                        try {
-                            JSONObject object = jsonArray.getJSONObject(n);
-                            songs.add(new Song(object.getString("id"), object.getString("name"), object.getString("uri")));
-                            Log.d(TAG, songs.get(songs.size()-1).toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
-        return songs;
-    }
-
+    /*
     //filtering through option 2
     private void filterRelaxingTracks(Options optionsObject, String userId) {
         Log.d(TAG, "in filterRelaxingTracks");
@@ -319,54 +314,20 @@ public class SongService implements MusicMixAlgorithmConstants {
         queue.add(jsonObjectRequest);
         return;
     }
-
+*/
     private void filterPartyTracks(Options optionsObject, String userId) {
         Log.d(TAG, "in filterPartyTracks");
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachPartySong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Party track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option3Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachPartySong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double danceability = response.optDouble("danceability");
-                    if (danceability >= PARTYING_DANCEABILITY) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double danceability = currentSong.getDanceability();
+            if (danceability >= PARTYING_DANCEABILITY) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -375,48 +336,14 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachExercisingSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Exercising track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option3Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachExercisingSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double danceability = response.optDouble("danceability");
-                    if (danceability >= EXERCISING_DANCEABILITY_LOW && danceability < EXERCISING_DANCEABILITY_HIGH) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double danceability = currentSong.getDanceability();
+            if (danceability >= EXERCISING_DANCEABILITY_LOW && danceability < EXERCISING_DANCEABILITY_HIGH) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -425,50 +352,17 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachWorkingSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Working track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option3Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachWorkingSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double danceability = response.optDouble("danceability");
-                    if (danceability >= WORKING_DANCEABILITY_LOW && danceability < WORKING_DANCEABILITY_HIGH) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double danceability = currentSong.getDanceability();
+            if (danceability >= WORKING_DANCEABILITY_LOW && danceability < WORKING_DANCEABILITY_HIGH) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
+
 
     //filtering through option 3
     private void filterInstrumentalTracks(Options optionsObject, String userId) {
@@ -476,48 +370,15 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachInstrumentalSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Instrumental track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option4Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachInstrumentalSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double instrumentalness = response.optDouble("instrumentalness");
-                    if (instrumentalness >= INSTRUMENTAL_INSTRUMENTALNESS) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double instrumentalness = currentSong.getInstrumentalness();
+            if (instrumentalness >= INSTRUMENTAL_INSTRUMENTALNESS) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
+        return;
     }
 
     private void filterElectronicTracks(Options optionsObject, String userId) {
@@ -525,48 +386,14 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachElectronicSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Electronic track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option4Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachElectronicSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double acousticness = response.optDouble("acousticness");
-                    if (acousticness <= ELECTRONIC_ACOUSTICNESS) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double acousticness = currentSong.getAcousticness();
+            if (acousticness <= ELECTRONIC_ACOUSTICNESS) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -575,48 +402,15 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachVocalSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Vocal track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option4Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachVocalSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double instrumentalness = response.optDouble("instrumentalness");
-                    if (instrumentalness <= VOCAL_INSTRUMENTALNESS) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double instrumentalness = currentSong.getInstrumentalness();
+            if (instrumentalness <= VOCAL_INSTRUMENTALNESS) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
+        return;
     }
 
     //filtering through option 4
@@ -625,48 +419,14 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachMotivationalSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Motivational track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option5Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachMotivationalSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double tempo = response.optDouble("tempo");
-                    if (tempo >= MOTIVATIONAL_TEMPO) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double tempo = currentSong.getTempo();
+            if (tempo >= MOTIVATIONAL_TEMPO) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -675,48 +435,14 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachCalmingSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Calming track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option5Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachCalmingSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double loudness = response.optDouble("loudness");
-                    if (loudness >= CALMING_LOUDNESS) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double loudness = currentSong.getLoudness();
+            if (loudness >= CALMING_LOUDNESS) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -725,48 +451,14 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachCheerfulSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Cheerful track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option5Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachCheerfulSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double valence = response.optDouble("valence");
-                    if (valence >= CHEERFUL_VALENCE) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double valence = currentSong.getValence();
+            if (valence >= CHEERFUL_VALENCE) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
         return;
     }
 
@@ -775,49 +467,17 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachSorrowfulSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Sorrowful track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option5Filter(optionsObject, userId);
-                    }
-                }
-            });
+            double valence = currentSong.getValence();
+            if (valence <= SORROWFUL_VALENCE) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
+            }
         }
+        songs = selectedSongs;
         return;
     }
 
-    private void filterEachSorrowfulSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double valence = response.optDouble("valence");
-                    if (valence <= SORROWFUL_VALENCE) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
-    }
 
     //filtering through option 5
     private void filterEnergyTracks(Options optionsObject, String userId) {
@@ -844,52 +504,15 @@ public class SongService implements MusicMixAlgorithmConstants {
         selectedSongs = new ArrayList<Song>();
         for (int i = 0; i < songs.size(); i++) {
             Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachEnergySong(currentSong, energyLow, energyHigh, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Energy track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        for (int i = 0; i < songs.size();i++) {
-                            Log.d(TAG, "createList: " + (i + ": " + (songs.get(i)).getName()));
-                        }
-                        createPlaylist(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        //songs = selectedSongs;
-        return;
-    }
-
-    private void filterEachEnergySong(Song currentSong, double energyLow, double energyHigh, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double energy = response.optDouble("energy");
-                    if (energy > energyLow && energy <= energyHigh) {
-                        selectedSongs.add(currentSong);
-                    } else {
-                        Log.d(TAG, "Not included song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
+            double energy = currentSong.getEnergy();
+            if (energy > energyLow && energy <= energyHigh) {
+                selectedSongs.add(currentSong);
+            } else {
+                Log.d(TAG, "Not included song: " + currentSong.getName());
             }
-        };
-        queue.add(jsonObjectRequest);
+        }
+        songs = selectedSongs;
+        //createPlaylist(optionsObject, userId);
         return;
     }
 
@@ -982,11 +605,7 @@ public class SongService implements MusicMixAlgorithmConstants {
                                 Log.i(TAG, "Playlist save was successful!!");
                                 //etDescription.setText("");
                                 //ivPostImage.setImageResource(0);
-                                //context.getActivity().goHomeFragment();
-                                //QuestionnaireFragment.FragmengoHomet();
-                                //context.goHome();
-
-
+                                MainActivity.questionnaireFragment.goHomeFragment();
                             }
                         });
                     }

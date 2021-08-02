@@ -129,7 +129,7 @@ public class QuestionnaireFragment extends Fragment {
                     //creating object for user's answers
                     ParseUser currentUser = ParseUser.getCurrentUser();
                     Options optionsObject = new Options(option1, option2, option3, option4, option5, currentUser);
-                    getTracks(optionsObject, userId);
+                    getQuestionnaireTracks(optionsObject, userId);
                     Log.d(TAG, "Questionnaire: " + userId);
 
                 }
@@ -140,7 +140,7 @@ public class QuestionnaireFragment extends Fragment {
 
 
     //method to get tracks and create playlist
-    private void getTracks(Options optionsObject, String userId) {
+    private void getQuestionnaireTracks(Options optionsObject, String userId) {
         Log.d(TAG, "getTracks called");
         songService.getPlaylistTracks(userId, optionsObject); //synchonous callback
     }
