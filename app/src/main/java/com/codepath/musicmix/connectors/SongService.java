@@ -55,41 +55,177 @@ public class SongService implements MusicMixAlgorithmConstants {
         return songs;
     }
 
+//    Happy - happy, sunshine / sunny, good, fun, dance / danc, sun, dream, beautiful, live, excited
+//    Angry - break, hate, hell, angry / anger, never (?), kill, don’t, misery, revenge, madness / mad
+//    Sad - hurt, when (?), loved, wreck, goodbye, heart, cry, tear / tears, burn (?) or over (?), broken
+//    Nervous - save, fake, breath / breathe, lonely, lost, calm / calm down (?), stress, numb, mind, demon(s)
+
+
     public void getPlaylistTracks(String userId, Options optionsObject) {
-        String endpoint;
+        String keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10;
         String userChoice;
         if (optionsObject.getOption1().equals(OPTION_HAPPY)) {
-            endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
             userChoice = "Happy";
-            /*getHappyTracks(() -> {
-                Log.d(TAG, "getHappyTracks Success!");
-                option2Filter(optionsObject, userId);
-            });*/
+            keyword1 = "happy";
+            keyword2 = "sunshine";
+            keyword3 = "good";
+            keyword4 = "fun";
+            keyword5 = "danc";
+            keyword6 = "sun";
+            keyword7 = "dream";
+            keyword8 = "beautiful";
+            keyword9 = "live";
+            keyword10 = "excited";
         } else if (optionsObject.getOption1().equals(OPTION_ANGRY)) {
-            endpoint = "https://api.spotify.com/v1/search?q=angry&type=track&market=US&limit=50&offset=0";
             userChoice = "Angry";
+            keyword1 = "break";
+            keyword2 = "hate";
+            keyword3 = "hell";
+            keyword4 = "angry";
+            keyword5 = "never";
+            keyword6 = "kill";
+            keyword7 = "anger";
+            keyword8 = "misery";
+            keyword9 = "revenge";
+            keyword10 = "mad";
         } else if (optionsObject.getOption1().equals(OPTION_SAD)) {
-            endpoint = "https://api.spotify.com/v1/search?q=sad&type=track&market=US&limit=50&offset=0";
             userChoice = "Sad";
+            keyword1 = "sad";
+            keyword2 = "hurt";
+            keyword3 = "loved";
+            keyword4 = "wreck";
+            keyword5 = "goodbye";
+            keyword6 = "heart";
+            keyword7 = "cry";
+            keyword8 = "tear";
+            keyword9 = "burn";
+            keyword10 = "broken";
         } else {                //Nervous
-            endpoint = "https://api.spotify.com/v1/search?q=nervous&type=track&market=US&limit=50&offset=0";
             userChoice = "Nervous";
+            keyword1 = "nervous";
+            keyword2 = "save";
+            keyword3 = "fake";
+            keyword4 = "breath";
+            keyword5 = "lonely";
+            keyword6 = "lost";
+            keyword7 = "calm%20down";
+            keyword8 = "stress";
+            keyword9 = "numb";
+            keyword10 = "mind";
         }
-        getTracks(endpoint, new VolleyCallBack() {
+
+        // getting tracks for keywords
+        getTracks(keyword1, new VolleyCallBack() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, userChoice + " getTracks Success!");
-                addAudioFeatures(0, 49, new VolleyCallBack() {
+                //Log.d(TAG, userChoice + " getTracks1 Success!");
+                getTracks(keyword2, new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
-                        option2Filter(optionsObject, userId);
+                        getTracks(keyword3, new VolleyCallBack() {
+                            @Override
+                            public void onSuccess() {
+                                getTracks(keyword4, new VolleyCallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        getTracks(keyword5, new VolleyCallBack() {
+                                            @Override
+                                            public void onSuccess() {
+                                                getTracks(keyword6, new VolleyCallBack() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        getTracks(keyword7, new VolleyCallBack() {
+                                                            @Override
+                                                            public void onSuccess() {
+                                                                getTracks(keyword8, new VolleyCallBack() {
+                                                                    @Override
+                                                                    public void onSuccess() {
+                                                                        getTracks(keyword9, new VolleyCallBack() {
+                                                                            @Override
+                                                                            public void onSuccess() {
+                                                                                getTracks(keyword10, new VolleyCallBack() {
+                                                                                    @Override
+                                                                                    public void onSuccess() {
+                                                                                        Log.d(TAG, userChoice + " all getTracks Success!");
+                                                                                        addAllAudioFeatures(optionsObject, userId);
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
-                //option2Filter(optionsObject, userId);
+
+            }
+        });
+        return;
+    }
+
+    //getting audio features for all tracks
+    private void addAllAudioFeatures(Options optionsObject, String userId) {
+        addAudioFeatures(0, 49, new VolleyCallBack() {
+            @Override
+            public void onSuccess() {
+                 addAudioFeatures(50, 99, new VolleyCallBack() {
+                     @Override
+                     public void onSuccess() {
+                         addAudioFeatures(100, 149, new VolleyCallBack() {
+                             @Override
+                             public void onSuccess() {
+                                 addAudioFeatures(150, 199, new VolleyCallBack() {
+                                     @Override
+                                     public void onSuccess() {
+                                         addAudioFeatures(200, 249, new VolleyCallBack() {
+                                             @Override
+                                             public void onSuccess() {
+                                                 addAudioFeatures(250, 299, new VolleyCallBack() {
+                                                     @Override
+                                                     public void onSuccess() {
+                                                         addAudioFeatures(300, 349, new VolleyCallBack() {
+                                                             @Override
+                                                             public void onSuccess() {
+                                                                 addAudioFeatures(350, 399, new VolleyCallBack() {
+                                                                     @Override
+                                                                     public void onSuccess() {
+                                                                         addAudioFeatures(400, 449, new VolleyCallBack() {
+                                                                             @Override
+                                                                             public void onSuccess() {
+                                                                                 addAudioFeatures(450, 499, new VolleyCallBack() {
+                                                                                     @Override
+                                                                                     public void onSuccess() {
+                                                                                         option2Filter(optionsObject, userId);
+                                                                                     }
+                                                                                 });
+                                                                             }
+                                                                         });
+                                                                     }
+                                                                 });
+                                                             }
+                                                         });
+                                                     }
+                                                 });
+                                             }
+                                         });
+                                     }
+                                 });
+                             }
+                         });
+                     }
+                 });
             }
         });
 
-        return;
     }
 
     private void option2Filter(Options optionsObject, String userId) {
@@ -149,8 +285,8 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
 
-    public ArrayList<Song> getTracks(String endpoint, final VolleyCallBack callBack) {
-        //String endpoint = "https://api.spotify.com/v1/search?q=happy&type=track&market=US&limit=50&offset=0";
+    public ArrayList<Song> getTracks(String keyword, final VolleyCallBack callBack) {
+        String endpoint = "https://api.spotify.com/v1/search?q=" + keyword + "&type=track&market=US&limit=50&offset=0";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, endpoint, null, response -> {
                     JSONObject jsonObject = response.optJSONObject("tracks");
@@ -190,8 +326,9 @@ public class SongService implements MusicMixAlgorithmConstants {
         for(int i = indexStart; i <= indexEnd; i++)
         {
             String songId = (songs.get(i)).getId();
+            idList += songId;
             if (i != indexEnd) {
-                idList += songId + "%2C";
+                idList +=  "%2C";
             }
         }
 
