@@ -1,5 +1,6 @@
 package com.codepath.musicmix.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,18 +18,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
+import com.codepath.musicmix.MainActivity;
 import com.codepath.musicmix.R;
+import com.codepath.musicmix.VolleyCallBack;
 import com.codepath.musicmix.models.Playlist;
+import com.codepath.musicmix.models.Song;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProfileFragment extends Fragment {
 
@@ -39,6 +54,10 @@ public class ProfileFragment extends Fragment {
     TextView tvUsername;
     ImageView ivProfileImage;
     private ParseUser user;
+    private String userId;
+    private SharedPreferences sharedPreferences;
+    private RequestQueue queue;
+    private String profileImageUrl;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -55,23 +74,34 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        sharedPreferences = getContext().getSharedPreferences("SPOTIFY", 0);
+        queue = Volley.newRequestQueue(getContext());
+        //getting user id
+        userId = sharedPreferences.getString("userid", "none");
+
         user = ParseUser.getCurrentUser();
         tvUsername = view.findViewById(R.id.tvUsername);
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
         rvPlaylists = view.findViewById(R.id.rvProfilePlaylists);
-        // initialize the array that will hold posts and create a PostsAdapter
-        allPlaylists = new ArrayList<>();
-        adapter = new PlaylistsAdapter(getContext(), allPlaylists);
 
-        // set the adapter on the recycler view
-        rvPlaylists.setAdapter(adapter);
-        // set the layout manager on the recycler view
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvPlaylists.setLayoutManager(linearLayoutManager);
-        // query playlists from MusicMix
-        queryPlaylists();
+        getProfileImage(new VolleyCallBack() {
+            @Override
+            public void onSuccess() {
+                // initialize the array that will hold posts and create a PostsAdapter
+                allPlaylists = new ArrayList<>();
+                adapter = new PlaylistsAdapter(getContext(), allPlaylists);
 
-        tvUsername.setText(user.getUsername());
+                // set the adapter on the recycler view
+                rvPlaylists.setAdapter(adapter);
+                // set the layout manager on the recycler view
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                rvPlaylists.setLayoutManager(linearLayoutManager);
+                // query playlists from MusicMix
+                queryPlaylists();
+                Glide.with(getActivity()).load(profileImageUrl).circleCrop().into(ivProfileImage);
+                tvUsername.setText(user.getUsername());
+            }
+        });
     }
 
     protected void queryPlaylists() {
@@ -104,5 +134,32 @@ public class ProfileFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void getProfileImage(final VolleyCallBack callBack) {
+        String endpoint = "https://api.spotify.com/v1/me";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, endpoint, null, response -> {
+                    JSONArray jsonArray = response.optJSONArray("images");
+                    //JSONArray jsonArray = jsonObject.optJSONArray("items");
+                     profileImageUrl = (jsonArray.optJSONObject(0)).optString("url");
+                    callBack.onSuccess();
+                }, error -> {
+                    Log.i(TAG, "error");
+
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = sharedPreferences.getString("token", "");
+                String auth = "Bearer " + token;
+                headers.put("Authorization", auth);
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
+        return;
     }
 }

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/ivProfileImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,18 +22,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="30dp"
         android:text="usename"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="34sp"
-        android:layout_below="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="username" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProfilePlaylists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tvUsername"
+        android:layout_below="@+id/ivProfileImage"
         android:layout_margin="5dp"
         />
 
