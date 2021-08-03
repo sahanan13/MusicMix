@@ -57,14 +57,14 @@ public class HomeFragment extends Fragment {
         // set the layout manager on the recycler view
         rvPlaylists.setLayoutManager(new LinearLayoutManager(getContext()));
         // query posts from MusicMix
-        queryPlaylist();
+        queryPlaylists();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvPlaylists.setLayoutManager(linearLayoutManager);
 
     }
 
-    protected void queryPlaylist() {
+    protected void queryPlaylists() {
         // specify what type of data to query - Playlist.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key

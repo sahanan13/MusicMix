@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.text.Layout;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +72,8 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         private TextView tvUsername;
         private TextView tvNumSongs;
         private ImageView ivPlaylistimg;
+        private Button btnLike;
+        boolean isLiked = false;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +81,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             tvNumSongs = itemView.findViewById(R.id.tvNumSongs);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             ivPlaylistimg = itemView.findViewById(R.id.ivPlaylistimg);
+            btnLike = itemView.findViewById(R.id.btnLike);
         }
 
         public void bind(Playlist playlist) {
@@ -84,6 +91,51 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             tvUsername.setText("Made by: " + playlist.getUser().getUsername());
             ParseFile image = playlist.getImage();
             Glide.with(context).load(image.getUrl()).into(ivPlaylistimg);
+
+            /*itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, PostDetailActivity.class);
+                    i.putExtra("Post", Parcels.wrap(post));
+                    context.startActivity(i);
+                }
+            });*/
+
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                GestureDetector gestureDetector = new GestureDetector(context.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+                        Toast.makeText(context.getApplicationContext(), "Double tap", Toast.LENGTH_SHORT).show();
+                        if (isLiked) {
+                            btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
+                            isLiked = false;
+                        } else {
+                            btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart_active));
+                            isLiked = true;
+                        }
+                        return super.onDoubleTap(e);
+                    }
+                });
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return true;
+                }
+            });
+
+            btnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isLiked) {
+                        btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
+                        isLiked = false;
+                    } else {
+                        btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart_active));
+                        isLiked = true;
+                    }
+                }
+            });
 
         }
     }

@@ -48,13 +48,27 @@
         android:layout_toEndOf="@+id/ivPlaylistimg"
         android:text="Made by username" />
 
-    <ImageView
-        android:id="@+id/ivHeart"
+    <!--<Button
+        android:id="@+id/btnLike"
         android:layout_width="37dp"
         android:layout_height="33dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="145dp"
         android:layout_toEndOf="@+id/tvPlaylistTitle"
-        app:srcCompat="@drawable/ufi_heart" />
+        android:background="@drawable/ic_ufi_heart"/>-->
+
+    <Button
+        android:id="@+id/btnLike"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="2dp"
+        android:layout_toEndOf="@+id/tvPlaylistTitle"
+        android:background="@drawable/ic_ufi_heart"
+        app:backgroundTint="#FF0000"/>
+
+
 </RelativeLayout>
