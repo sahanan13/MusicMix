@@ -12,34 +12,20 @@ import java.util.ArrayList;
 @Parcel(analyze=Playlist.class)
 @ParseClassName("Playlist")
 public class Playlist extends ParseObject {
-    //private String id;
-    //private String name;
     private ArrayList<Song> songs;
     private Options options;
-    //public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     public static final String KEY_PLAYLIST_NAME = "playlistName";
     public static final String KEY_NUM_SONGS = "numSongs";
     public static final String KEY_PLAYLIST_ID = "playlistId";
 
-    //public Playlist() {} //empty constructor
-
-    /*public Playlist(String id, String name, Options optionsObject) {
-        //this.id = id;
-        //this.name = name;
-        this.options = optionsObject;
-
-        put(KEY_PLAYLIST_ID, id);
-        put(KEY_PLAYLIST_NAME, name);
-    }*/
-
     public String getId() {
         return getString(KEY_PLAYLIST_ID);
     }
 
     public void setId(String id) {
-        //this.id = id;
         put(KEY_PLAYLIST_ID, id);
     }
 
@@ -76,6 +62,14 @@ public class Playlist extends ParseObject {
         put(KEY_NUM_SONGS, numSongs);
     }
 
+    public String getDescription() {
+        return getString(KEY_DESCRIPTION);
+    }
+
+    public void setDescription(String description) {
+        put(KEY_DESCRIPTION, description);
+    }
+
     public ArrayList<Song> getSongs() {
         return songs;
     }
@@ -83,6 +77,7 @@ public class Playlist extends ParseObject {
     public void setSongs(ArrayList<Song> songs) {
         this.songs = songs;
     }
+
 
     public Options getOptions() {
         return options;

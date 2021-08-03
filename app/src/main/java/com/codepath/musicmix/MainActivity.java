@@ -54,18 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         Toast.makeText(MainActivity.this, "Home!", Toast.LENGTH_SHORT).show();
-                        //fragment = new HomeFragment();
                         fragment = homeFragment;
                         break;
                     case R.id.action_questionnaire:
                         Toast.makeText(MainActivity.this, "Questionnaire!", Toast.LENGTH_SHORT).show();
-                        //fragment = new QuestionnaireFragment();
                         fragment = questionnaireFragment;
                         break;
                     case R.id.action_profile:
                     default:
                         Toast.makeText(MainActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
-                        //fragment = new ProfileFragment();
                         fragment = profileFragment;
                         break;
                 }

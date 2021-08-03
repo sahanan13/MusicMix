@@ -85,17 +85,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             ParseFile image = playlist.getImage();
             Glide.with(context).load(image.getUrl()).into(ivPlaylistimg);
 
-            /*itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, PostDetailActivity.class);
-                    i.putExtra("Post", Parcels.wrap(post));
-                    context.startActivity(i);
-                }
-            });*/
-
-
-
         }
     }
 

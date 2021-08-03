@@ -83,11 +83,6 @@ public class HomeFragment extends Fragment {
                     return;
                 }
 
-                /*// for debugging purposes - print every playlist description to logcat
-                for (Playlist playlist : playlists) {
-                    Log.i(TAG, "Playlist name: " + playlist.getName() + ", username: " + playlist.getUser().getUsername());
-                }*/
-
                 // save received playlists to list and notify adapter of new data
                 adapter.clear();
                 allPlaylists.addAll(playlists);

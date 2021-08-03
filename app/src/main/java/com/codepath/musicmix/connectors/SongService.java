@@ -55,12 +55,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         return songs;
     }
 
-//    Happy - happy, sunshine / sunny, good, fun, dance / danc, sun, dream, beautiful, live, excited
-//    Angry - break, hate, hell, angry / anger, never (?), kill, don’t, misery, revenge, madness / mad
-//    Sad - hurt, when (?), loved, wreck, goodbye, heart, cry, tear / tears, burn (?) or over (?), broken
-//    Nervous - save, fake, breath / breathe, lonely, lost, calm / calm down (?), stress, numb, mind, demon(s)
-
-
     public void getPlaylistTracks(String userId, Options optionsObject) {
         String keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10;
         String userChoice;
@@ -319,9 +313,6 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
     private void addAudioFeatures(int indexStart, int indexEnd, final VolleyCallBack callBack) {
-        //https://api.spotify.com/v1/audio-features?ids=60nZcImufyMA1MKQY3dcCH%2C5kNe7PE09d6Kvw5pAsx23n%2C0INUE1K7cEiE8VH63Rv5RJ
-        // ^^ 3 songs
-
         String idList = "";
         for(int i = indexStart; i <= indexEnd; i++)
         {
@@ -399,59 +390,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         return;
     }
 
-    /*
-    //filtering through option 2
-    private void filterRelaxingTracks(Options optionsObject, String userId) {
-        Log.d(TAG, "in filterRelaxingTracks");
-        selectedSongs = new ArrayList<Song>();
-        for (int i = 0; i < songs.size(); i++) {
-            Song currentSong = songs.get(i);
-            int finalI = i;
-            filterEachRelaxingSong(currentSong, new VolleyCallBack() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Relaxing track song success!");
-                    if (finalI == songs.size()-1) {
-                        songs = selectedSongs;
-                        option3Filter(optionsObject, userId);
-                    }
-                }
-            });
-        }
-        return;
-    }
-
-    private void filterEachRelaxingSong(Song currentSong, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/audio-features/" + currentSong.getId();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, endpoint, null, response -> {
-                    double danceability = response.optDouble("danceability");
-                    if (danceability < RELAXING_DANCEABILITY) {
-                        selectedSongs.add(currentSong);
-                        Log.d(TAG, "Relaxing song: " + currentSong.getName());
-                    } else {
-                        Log.d(TAG, "Not relaxing song: " + currentSong.getName());
-                    }
-                    callBack.onSuccess();
-                }, error -> {
-                    Log.i(TAG, "error");
-
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = sharedPreferences.getString("token", "");
-                String auth = "Bearer " + token;
-                headers.put("Authorization", auth);
-                headers.put("Content-Type", "application/json");
-                headers.put("Accept", "application/json");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
-        return;
-    }
-*/
     private void filterPartyTracks(Options optionsObject, String userId) {
         Log.d(TAG, "in filterPartyTracks");
         selectedSongs = new ArrayList<Song>();
@@ -723,8 +661,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         }
 
         Log.d(TAG, "Uri list: " +uriList);
-        //Url for adding items to playlists
-        // "https://api.spotify.com/v1/playlists/3cEYpjA9oz9GiPac4AsH4n/tracks?uris=spotify%3Atrack%3A4iV5W9uYEdYUVa79Axb7Rh%2Cspotify%3Atrack%3A1301WleyT98MSxVHPZCA6M"
         String url = "https://api.spotify.com/v1/playlists/"+playlist.getId()+"/tracks?uris="+uriList;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                 new Response.Listener<JSONObject>() {
