@@ -20,6 +20,7 @@ public class Playlist extends ParseObject {
     public static final String KEY_PLAYLIST_NAME = "playlistName";
     public static final String KEY_NUM_SONGS = "numSongs";
     public static final String KEY_PLAYLIST_ID = "playlistId";
+    public static final String KEY_IMAGE_URL = "imageUrl";
 
     public String getId() {
         return getString(KEY_PLAYLIST_ID);
@@ -68,6 +69,14 @@ public class Playlist extends ParseObject {
 
     public void setDescription(String description) {
         put(KEY_DESCRIPTION, description);
+    }
+
+    public String getImageUrl() {
+        return getString(KEY_IMAGE_URL);
+    }
+
+    public void setImageUrl(String imageUrl) {
+        put(KEY_IMAGE_URL, imageUrl);
     }
 
     public ArrayList<Song> getSongs() {
