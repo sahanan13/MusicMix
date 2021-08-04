@@ -89,7 +89,7 @@ public class ProfileFragment extends Fragment {
             public void onSuccess() {
                 // initialize the array that will hold posts and create a PostsAdapter
                 allPlaylists = new ArrayList<>();
-                adapter = new PlaylistsAdapter(getContext(), allPlaylists);
+                //adapter = new PlaylistsAdapter(getContext(), allPlaylists);
 
                 // set the adapter on the recycler view
                 rvPlaylists.setAdapter(adapter);

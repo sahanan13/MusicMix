@@ -16,13 +16,16 @@ import android.view.ViewGroup;
 
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
 import com.codepath.musicmix.R;
+import com.codepath.musicmix.models.Like;
 import com.codepath.musicmix.models.Playlist;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvPlaylists;
     protected PlaylistsAdapter adapter;
     protected List<Playlist> allPlaylists;
+    protected ArrayList<Like> likes;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -50,7 +54,10 @@ public class HomeFragment extends Fragment {
 
         rvPlaylists = (RecyclerView) view.findViewById(R.id.rvPlaylists);
         allPlaylists = new ArrayList<>();
-        adapter = new PlaylistsAdapter(getContext(), allPlaylists);
+        likes = new ArrayList<>();
+
+        queryLikes();
+        adapter = new PlaylistsAdapter(getContext(), allPlaylists, likes);
 
         // set the adapter on the recycler view
         rvPlaylists.setAdapter(adapter);
@@ -86,6 +93,28 @@ public class HomeFragment extends Fragment {
                 // save received playlists to list and notify adapter of new data
                 adapter.clear();
                 allPlaylists.addAll(playlists);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    protected void queryLikes() {
+        // specify what type of data to query - Playlist.class
+        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+        query.whereEqualTo(Like.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        // start an asynchronous call for playlists
+        query.findInBackground(new FindCallback<Like>() {
+            @Override
+            public void done(List<Like> likesList, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting likes", e);
+                    return;
+                }
+                Log.d(TAG, "Likes list: " + likesList.toString());
+                // save received playlists to list and notify adapter of new data
+                adapter.clear();
+                likes.addAll(likesList);
                 adapter.notifyDataSetChanged();
             }
         });

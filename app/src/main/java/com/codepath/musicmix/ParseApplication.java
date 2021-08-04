@@ -2,6 +2,7 @@ package com.codepath.musicmix;
 
 import android.app.Application;
 
+import com.codepath.musicmix.models.Like;
 import com.codepath.musicmix.models.Playlist;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -16,6 +17,7 @@ public class ParseApplication extends Application {
         // Register your parse models
 
         ParseObject.registerSubclass(Playlist.class);
+        ParseObject.registerSubclass(Like.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("X1yrOT63fuxupDkdQ4yYLVC57P7hOGjL3oltuQQ4")
