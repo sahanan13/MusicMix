@@ -26,6 +26,7 @@ public class Playlist extends ParseObject {
     public static final String KEY_OPTION3 = "option3";
     public static final String KEY_OPTION4 = "option4";
     public static final String KEY_OPTION5 = "option5";
+    public static final String KEY_CREATED_DATE = "createdDate";
 
     public String getId() {
         return getString(KEY_PLAYLIST_ID);
@@ -120,6 +121,14 @@ public class Playlist extends ParseObject {
 
     public void setKeyOption5(String newOption5) {
         put(KEY_OPTION5, newOption5);
+    }
+
+    public String getCreatedDate() {
+        return getString(KEY_CREATED_DATE);
+    }
+
+    public void setCreatedDate(String date) {
+        put(KEY_CREATED_DATE, date);
     }
 
 

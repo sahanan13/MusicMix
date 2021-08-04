@@ -618,10 +618,10 @@ public class SongService implements MusicMixAlgorithmConstants {
                         Log.d(TAG, "String Response : "+ response.toString());
                         try {
                             playlist = new Playlist();
-                            //playlist = new Playlist(response.getString("id"), name, optionsObject);
                             playlist.setId(response.getString("id"));
                             playlist.setName(name);
                             playlist.setDescription("None");
+                            playlist.setCreatedDate(name);
                             playlist.setOptions(optionsObject);
                             playlist.setUser(optionsObject.getCurrentUser());
                             addSongsToPlaylist();

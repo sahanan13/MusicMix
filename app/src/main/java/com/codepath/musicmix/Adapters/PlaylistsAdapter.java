@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.codepath.musicmix.MainActivity;
+import com.codepath.musicmix.PlaylistDetailActivity;
 import com.codepath.musicmix.R;
 import com.codepath.musicmix.VolleyCallBack;
 import com.codepath.musicmix.models.Like;
@@ -118,7 +119,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
         }
 
         public void bind(Playlist playlist) {
-            // Bind the post data to the view elements
+            // Bind the playlist data to the view elements
             tvPlaylistTitle.setText(playlist.getName());
             tvNumSongs.setText(playlist.getNumSongs() + " songs");
             tvUsername.setText("Made by: " + playlist.getUser().getUsername());
@@ -140,15 +141,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                             btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.red));
                         }
                     }
-
-                    /*itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(context, PostDetailActivity.class);
-                            i.putExtra("Post", Parcels.wrap(post));
-                            context.startActivity(i);
-                        }
-                    });*/
 
                     itemView.setOnTouchListener(new View.OnTouchListener() {
                         GestureDetector gestureDetector = new GestureDetector(context.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -216,12 +208,88 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                                 }
                                 return super.onDoubleTap(e);
                             }
+
+                            @Override
+                            public boolean onSingleTapConfirmed(MotionEvent e) {
+                                //Toast.makeText(context.getApplicationContext(), "item clicked!", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "playlist clicked!");
+                                Intent i = new Intent(context, PlaylistDetailActivity.class);
+                                i.putExtra("Playlist", Parcels.wrap(playlist));
+                                i.putExtra("Likes", Parcels.wrap(likes));
+                                context.startActivity(i);
+                                return super.onSingleTapConfirmed(e);
+                            }
                         });
 
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
                             gestureDetector.onTouchEvent(event);
                             return true;
+                        }
+                    });
+
+                    btnLike.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if ((int)btnLike.getTag() == R.drawable.ic_ufi_heart) {
+                                Like newLike = new Like();
+                                newLike.setPlaylistId(playlist.getObjectId());
+                                newLike.setUserId(ParseUser.getCurrentUser().getObjectId());
+                                newLike.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e != null) {
+                                            Log.e("PlaylistsAdapter", "Error while saving", e);
+                                            Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            Log.d("PlaylistsAdapter", "Saved successfully!");
+                                            btnLike.setTag(R.drawable.ic_ufi_heart_active);
+                                            btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart_active));
+                                            btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.red));
+                                            likes.add(newLike);
+                                        }
+                                        Log.i("PlaylistsAdapter", "Like save was successful!!");
+                                    }
+                                });
+                            } else {
+                                //Log.d("PlaylistsAdapter", "Unliked!");
+                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Like");
+                                String likeObjectId = "";
+                                int likeIndex = -1;
+
+                                for (int i = 0; i < likes.size(); i++) {
+                                    if ((playlist.getObjectId()).equals(likes.get(i).getPlaylistId())) {
+                                        likeObjectId = likes.get(i).getObjectId();
+                                        likeIndex = i;
+                                        break;
+                                    }
+                                }
+
+                                // Retrieve the object by id
+                                int finalLikeIndex = likeIndex;
+                                query.getInBackground(likeObjectId, (object, e3) -> {
+                                    if (e3 == null) {
+                                        //Object was fetched
+                                        //Deletes the fetched ParseObject from the database
+                                        object.deleteInBackground(e2 -> {
+                                            if(e2==null){
+                                                Log.d(TAG, "Delete Successful");
+                                                btnLike.setTag(R.drawable.ic_ufi_heart);
+                                                btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
+                                                btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.black));
+                                                likes.remove(finalLikeIndex);
+                                            }else{
+                                                //Something went wrong while deleting the Object
+                                                Log.e(TAG, e2.getMessage(), e2);
+                                            }
+                                        });
+                                    }else{
+                                        //Something went wrong
+                                        Log.e(TAG, e3.getMessage(), e3);
+                                    }
+                                });
+                            }
                         }
                     });
                 }

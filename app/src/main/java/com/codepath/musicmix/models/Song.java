@@ -4,6 +4,8 @@ public class Song {
     private String id;
     private String name;
     private String uri;
+    private String artist;
+    private String songImageUrl;
     private double danceability;
     private double instrumentalness;
     private double acousticness;
@@ -11,6 +13,8 @@ public class Song {
     private double loudness;
     private double valence;
     private double energy;
+
+    public Song() {} //empty constructor
 
     public Song(String id, String name, String uri) {
         this.name = name;
@@ -33,6 +37,18 @@ public class Song {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getSongImageUrl() { return songImageUrl; }
+
+    public void setSongImageUrl(String songImageUrl) { this.songImageUrl = songImageUrl; }
 
     public String getUri() {
         return uri;
