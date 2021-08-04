@@ -621,6 +621,7 @@ public class SongService implements MusicMixAlgorithmConstants {
                             //playlist = new Playlist(response.getString("id"), name, optionsObject);
                             playlist.setId(response.getString("id"));
                             playlist.setName(name);
+                            playlist.setDescription("None");
                             playlist.setOptions(optionsObject);
                             playlist.setUser(optionsObject.getCurrentUser());
                             addSongsToPlaylist();
@@ -676,8 +677,6 @@ public class SongService implements MusicMixAlgorithmConstants {
                                     Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
                                 }
                                 Log.i(TAG, "Playlist save was successful!!");
-                                //etDescription.setText("");
-                                //ivPostImage.setImageResource(0);
                                 MainActivity.questionnaireFragment.goHomeFragment();
                             }
                         });

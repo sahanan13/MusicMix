@@ -17,6 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
+            android:textColor="@color/black"
             android:text="Playlist Questionnaire"
             android:textSize="34sp" />
 
@@ -28,6 +29,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
             android:text="1. How are you feeling today?" />
         <RadioGroup
             android:id="@+id/radioGroup1"
@@ -63,6 +66,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
             android:text="2. What are your plans for today?" />
 
         <RadioGroup
@@ -98,6 +103,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
             android:text="3. What musical elements do you feel like listening to?" />
 
         <RadioGroup
@@ -130,6 +137,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
             android:text="4. What musical themes do you like best?" />
 
         <RadioGroup
@@ -165,6 +174,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
             android:text="5. On a scale of 1-5, how energetic do you feel today?" />
 
         <RadioGroup

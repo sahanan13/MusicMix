@@ -123,32 +123,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             tvNumSongs.setText(playlist.getNumSongs() + " songs");
             tvUsername.setText("Made by: " + playlist.getUser().getUsername());
 
-            //ParseQuery<ParseObject> query = ParseQuery.getQuery("Playlist");
-
             getPlaylistImage(playlist, new VolleyCallBack() {
                 @Override
                 public void onSuccess() {
-
-                    //playlistUrl = "https://mosaic.scdn.co/640/ab67616d0000b2730ce7276f98d22a40865d9f0aab67616d0000b2734bacbc30e17cc26d32e7f138ab67616d0000b273d25f1f1f93036cc3b5abf4e8ab67616d0000b273fa5e6a681840021eb63e75ad";
-
-
-                    /*//change playlist image
-                    // Retrieve the object by id
-                    query.getInBackground(playlist.getObjectId(), (object, e) -> {
-                        if (e == null) {
-                            //Object was successfully retrieved
-                            // Update the image Url field
-                            object.put("imageUrl", playlist.getImageUrl());
-                            //All other fields will remain the same
-                            object.saveInBackground();
-                        } else {
-                            // something went wrong
-                            Log.e(TAG, e.getMessage(), e);
-                        }
-                    });*/
-
-                    //ParseFile image = playlist.getImage();
-                    //Glide.with(context).load(image.getUrl()).into(ivPlaylistimg);
+                    //change playlist image
+                    updatePlaylistImage(playlist);
                     Glide.with(context).load(playlist.getImageUrl()).into(ivPlaylistimg);
                     btnLike.setTag(R.drawable.ic_ufi_heart);
                     btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
@@ -168,22 +147,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                             Intent i = new Intent(context, PostDetailActivity.class);
                             i.putExtra("Post", Parcels.wrap(post));
                             context.startActivity(i);
-                        }
-                    });*/
-
-                    /*ParseQuery<ParseObject> query = ParseQuery.getQuery("Playlist");
-                    // Retrieve the object by id
-                    query.getInBackground("QHjRWwgEtd", new GetCallback<ParseObject>() {
-                        public void done(ParseObject playlist, ParseException e) {
-                            if (e == null) {
-                                // Now let's update it with some new data. In this case, only cheatMode and score
-                                // will get sent to the Parse Cloud. playerName hasn't changed.
-                                player.put("yearOfBirth", 1998);
-                                player.put("emailContact", "a.wed@domain.io");
-                                player.saveInBackground();
-                            } else {
-                                // Failed
-                            }
                         }
                     });*/
 
@@ -261,31 +224,18 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                             return true;
                         }
                     });
-
-                    /*
-                    btnLike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (Boolean.valueOf(playlist.getIsLiked())) {
-                                btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                                playlist.setIsLiked("false");
-                            } else {
-                                btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart_active));
-                                playlist.setIsLiked("true");
-                            }
-                        }
-                    });*/
                 }
             });
 
-        }//
+        }
 
         public void getPlaylistImage(Playlist playlist, final VolleyCallBack callBack) {
             String endpoint = "https://api.spotify.com/v1/playlists/" + playlist.getId();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, endpoint, null, response -> {
                         JSONArray jsonArray = response.optJSONArray("images");
-                        playlist.setImageUrl((jsonArray.optJSONObject(0)).optString("url"));
+                        playlistUrl = (jsonArray.optJSONObject(0)).optString("url");
+                        playlist.setImageUrl(playlistUrl);
                         callBack.onSuccess();
                     }, error -> {
                         Log.i(TAG, "error");
@@ -306,6 +256,26 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             return;
         }
 
+        public void updatePlaylistImage(Playlist playlist) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Playlist");
+
+            // Retrieve the object by id
+            query.getInBackground(playlist.getObjectId(), (object, e) -> {
+                if (e == null) {
+                    //Object was successfully retrieved
+                    // Update the fields we want to
+                    object.put("imageUrl", playlist.getImageUrl());
+
+                    //All other fields will remain the same
+                    object.saveInBackground();
+
+                } else {
+                    // something went wrong
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            });
+
+        }
 
 
     }

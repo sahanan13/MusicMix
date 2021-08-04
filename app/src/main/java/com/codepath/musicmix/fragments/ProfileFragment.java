@@ -115,8 +115,6 @@ public class ProfileFragment extends Fragment {
         // include data referred by user key
         query.whereEqualTo(Playlist.KEY_USER, ParseUser.getCurrentUser());
         query.include(Playlist.KEY_USER);
-        // limit query to latest 100 items
-        query.setLimit(100);
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for posts

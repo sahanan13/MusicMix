@@ -76,8 +76,6 @@ public class HomeFragment extends Fragment {
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key
         query.include(Playlist.KEY_USER);
-        // limit query to latest 20 items
-        query.setLimit(20);
         // order playlists by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for playlists
