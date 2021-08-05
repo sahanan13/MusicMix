@@ -46,27 +46,57 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new HomeFragment();
         questionnaireFragment = new QuestionnaireFragment();
         profileFragment = new ProfileFragment();
+        final int[] enterAnim = new int[1];
+        final int[] exitAnim = new int[1];
+        final int[] popEnterAnim = new int[1];
+        final int[] popExitAnim = new int[1];
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
                 Fragment fragment;
+                int currentFragmentId = bottomNavigationView.getSelectedItemId();
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         Toast.makeText(MainActivity.this, "Home!", Toast.LENGTH_SHORT).show();
                         fragment = homeFragment;
+                        // slide to left
+                        enterAnim[0] = R.anim.from_left;
+                        exitAnim[0] = R.anim.to_right;
+                        popEnterAnim[0] = R.anim.from_right;
+                        popExitAnim[0] = R.anim.to_left;
                         break;
                     case R.id.action_questionnaire:
                         Toast.makeText(MainActivity.this, "Questionnaire!", Toast.LENGTH_SHORT).show();
                         fragment = questionnaireFragment;
+                        if (currentFragmentId == R.id.action_profile) {
+                            // slide to left
+                            enterAnim[0] = R.anim.from_left;
+                            exitAnim[0] = R.anim.to_right;
+                            popEnterAnim[0] = R.anim.from_right;
+                            popExitAnim[0] = R.anim.to_left;
+                        } else if (currentFragmentId == R.id.action_home) {
+                            // slide to right
+                            enterAnim[0] = R.anim.from_right;
+                            exitAnim[0] = R.anim.to_left;
+                            popEnterAnim[0] = R.anim.from_left;
+                            popExitAnim[0] = R.anim.to_right;
+                        }
                         break;
                     case R.id.action_profile:
+                        // slide to right
+                        enterAnim[0] = R.anim.from_right;
+                        exitAnim[0] = R.anim.to_left;
+                        popEnterAnim[0] = R.anim.from_left;
+                        popExitAnim[0] = R.anim.to_right;
                     default:
                         Toast.makeText(MainActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
                         fragment = profileFragment;
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(enterAnim[0], exitAnim[0], popEnterAnim[0], popExitAnim[0])
+                        .replace(R.id.flContainer, fragment).commit();
+                //overridePendingTransition(R.anim.from_right, R.anim.to_left);
                 return true;
             }
         });
