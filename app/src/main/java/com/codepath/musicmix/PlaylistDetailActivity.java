@@ -16,12 +16,15 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
 import com.codepath.musicmix.Adapters.SongsAdapter;
 import com.codepath.musicmix.models.Like;
+import com.codepath.musicmix.models.Options;
 import com.codepath.musicmix.models.Playlist;
 import com.codepath.musicmix.models.Song;
 import com.parse.ParseException;
@@ -36,13 +39,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlaylistDetailActivity extends AppCompatActivity {
+public class PlaylistDetailActivity extends AppCompatActivity implements EditDialog.EditDialogListener {
 
     private ImageView ivPlaylistImage;
     private TextView tvPlaylistName, tvDescription, tvCreatedBy, tvCreatedAt, tvNumSongsDetails;
@@ -52,7 +57,7 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     private static final String TAG = "PlaylistDetailActivity";
     private SharedPreferences sharedPreferences;
     private RequestQueue queue;
-    private Button btnLikeDetail, btnEdit;
+    private Button btnLikeDetail, btnEdit, btnRefresh;
     private List<Like> likes;
 
     @Override
@@ -68,6 +73,7 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         rvSongs = findViewById(R.id.rvSongs);
         btnLikeDetail = findViewById(R.id.btnLikeDetail);
         btnEdit = findViewById(R.id.btnEdit);
+        btnRefresh = findViewById(R.id.btnRefresh);
 
         sharedPreferences = this.getSharedPreferences("SPOTIFY", 0);
         queue = Volley.newRequestQueue(this);
@@ -173,6 +179,14 @@ public class PlaylistDetailActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+                // to allow user to edit playlist information
+                btnEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openDialog(tvPlaylistName.getText().toString(), playlist.getDescription(), playlist);
+                    }
+                });
             }
         });
 
@@ -223,5 +237,89 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         return;
     }
 
+    public void openDialog(String oldPlaylistName, String oldPlaylistDescription, Playlist playlist) {
+        EditDialog editDialog = new EditDialog(oldPlaylistName, oldPlaylistDescription, playlist);
+        editDialog.show(getSupportFragmentManager(), "Edit dialog");
+    }
 
+
+    @Override
+    public void applyTexts(String newPlaylistName, String newPlaylistDescription, Playlist playlist) {
+        //Update Parse
+        updateParsePlaylistObject(newPlaylistName, newPlaylistDescription, playlist);
+
+        //Update Spotify
+        updatePlaylist(newPlaylistName, newPlaylistDescription, playlist);
+
+        //Update Playlist detail view
+        tvPlaylistName.setText(newPlaylistName);
+        tvDescription.setText("Description: " + newPlaylistDescription);
+
+    }
+
+    public void updateParsePlaylistObject(String newPlaylistName, String newPlaylistDescription, Playlist playlist) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Playlist");
+
+        // Retrieve the object by id
+        query.getInBackground(playlist.getObjectId(), (object, e) -> {
+            if (e == null) {
+                //Object was successfully retrieved
+                // Update the fields we want to
+                object.put("description", newPlaylistDescription);
+                object.put("playlistName", newPlaylistName);
+
+                //All other fields will remain the same
+                object.saveInBackground();
+
+            } else {
+                // something went wrong
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    // method to update playlist
+    public void updatePlaylist(String newPlaylistName, String newPlaylistDescription, Playlist playlist) {
+        JSONObject object = new JSONObject();
+        try {
+            //input your API parameters
+            object.put("name", newPlaylistName);
+            object.put("description",newPlaylistDescription);
+            object.put("public", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Enter the correct url for your api service site
+        String endpoint = "https://api.spotify.com/v1/playlists/" + playlist.getId();
+        Log.d(TAG, "Update playlist endpoint: " + endpoint);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, endpoint, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "String Response : "+ response.toString());
+                        playlist.setName(newPlaylistName);
+                        playlist.setDescription(newPlaylistDescription);
+                        Log.d(TAG, "Playlist updated!");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Error getting response");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = sharedPreferences.getString("token", "");
+                String auth = "Bearer " + token;
+                headers.put("Authorization", auth);
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
 }

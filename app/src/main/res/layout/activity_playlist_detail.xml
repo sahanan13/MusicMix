@@ -106,7 +106,20 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="203dp"
-        android:background="@drawable/ic_ufi_heart"
+        android:background="@drawable/ic_edit"
+        app:backgroundTint="#000000" />
+
+    <Button
+        android:id="@+id/btnRefresh"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/tvPlaylistName"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="157dp"
+        android:background="@drawable/ic_refresh"
         app:backgroundTint="#000000" />
 
 </RelativeLayout>
