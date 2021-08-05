@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
 import com.codepath.musicmix.R;
 import com.codepath.musicmix.models.Like;
@@ -36,6 +37,7 @@ public class HomeFragment extends Fragment {
     protected PlaylistsAdapter adapter;
     protected List<Playlist> allPlaylists;
     protected ArrayList<Like> likes;
+    private PullRefreshLayout pullRefreshLayout;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -69,6 +71,24 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvPlaylists.setLayoutManager(linearLayoutManager);
 
+
+        // Lookup the swipe container view
+        pullRefreshLayout = (PullRefreshLayout) view.findViewById(R.id.pullRefreshLayout);
+
+        pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                pullRefreshLayout.setRefreshing(true);
+                pullRefreshLayout.setVisibility(View.VISIBLE);
+                Log.d(TAG, "onRefresh!");
+                queryPlaylists();
+            }
+        });
+
+        // refresh complete
+        Log.d(TAG, "refresh complete!");
+        pullRefreshLayout.setRefreshing(false);
+
     }
 
     protected void queryPlaylists() {
@@ -92,6 +112,10 @@ public class HomeFragment extends Fragment {
                 adapter.clear();
                 allPlaylists.addAll(playlists);
                 adapter.notifyDataSetChanged();
+                // end refreshing
+                pullRefreshLayout.setRefreshing(false);
+                Log.d(TAG, "done refreshing in queryPlaylist");
+
             }
         });
     }

@@ -135,7 +135,6 @@ public class PlaylistDetailActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            //Log.d("PlaylistsAdapter", "Unliked!");
                             ParseQuery<ParseObject> query = ParseQuery.getQuery("Like");
                             String likeObjectId = "";
                             int likeIndex = -1;

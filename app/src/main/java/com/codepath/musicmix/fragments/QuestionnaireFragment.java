@@ -111,8 +111,6 @@ public class QuestionnaireFragment extends Fragment {
                     option3 = (String) radioButton3.getText();
                     option4 = (String) radioButton4.getText();
                     option5 = (String) radioButton5.getText();
-                    //Toast.makeText(getContext(), "Selected buttons: " + option1 + " " + option2 +
-                    //        " " + option3 + " " + option4 + " " + option5, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getContext(), "Generating playlist...", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Selected buttons: " + option1 + " " + option2 + " " + option3
                             + " " + option4 + " " + option5);
@@ -142,7 +140,7 @@ public class QuestionnaireFragment extends Fragment {
     //method to get tracks and create playlist
     private void getQuestionnaireTracks(Options optionsObject, String userId) {
         Log.d(TAG, "getTracks called");
-        songService.getPlaylistTracks(userId, optionsObject); //synchonous callback
+        songService.getPlaylistTracks(userId, optionsObject); //asynchronous callback
     }
 
     public void goHomeFragment() {

@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fragmentManager.beginTransaction().setCustomAnimations(enterAnim[0], exitAnim[0], popEnterAnim[0], popExitAnim[0])
                         .replace(R.id.flContainer, fragment).commit();
-                //overridePendingTransition(R.anim.from_right, R.anim.to_left);
                 return true;
             }
         });

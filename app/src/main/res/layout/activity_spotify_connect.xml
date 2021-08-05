@@ -20,6 +20,4 @@
         android:layout_marginBottom="20dp"
         android:text="Connect Spotify Account" />
 
-    <!--android:onClick="loginToRest"-->
-
 </RelativeLayout>

@@ -23,6 +23,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.baoyz.widget.PullRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
 import com.codepath.musicmix.MainActivity;
@@ -60,6 +61,7 @@ public class ProfileFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private RequestQueue queue;
     private String profileImageUrl;
+    private PullRefreshLayout pullRefreshLayout;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -105,6 +107,24 @@ public class ProfileFragment extends Fragment {
                 queryPlaylists();
                 Glide.with(getActivity()).load(profileImageUrl).circleCrop().into(ivProfileImage);
                 tvUsername.setText(user.getUsername());
+
+                // Lookup the swipe container view
+                pullRefreshLayout = (PullRefreshLayout) view.findViewById(R.id.pullRefreshLayout);
+
+                pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        pullRefreshLayout.setRefreshing(true);
+                        pullRefreshLayout.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "onRefresh!");
+                        queryPlaylists();
+                    }
+                });
+
+                // refresh complete
+                Log.d(TAG, "refresh complete!");
+                pullRefreshLayout.setRefreshing(false);
+
             }
         });
     }
@@ -135,6 +155,9 @@ public class ProfileFragment extends Fragment {
                 // save received posts to list and notify adapter of new data
                 allPlaylists.addAll(playlists);
                 adapter.notifyDataSetChanged();
+                // end refreshing
+                pullRefreshLayout.setRefreshing(false);
+                Log.d(TAG, "done refreshing in queryPlaylist");
             }
         });
     }
@@ -144,8 +167,7 @@ public class ProfileFragment extends Fragment {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, endpoint, null, response -> {
                     JSONArray jsonArray = response.optJSONArray("images");
-                    //JSONArray jsonArray = jsonObject.optJSONArray("items");
-                     profileImageUrl = (jsonArray.optJSONObject(0)).optString("url");
+                    profileImageUrl = (jsonArray.optJSONObject(0)).optString("url");
                     callBack.onSuccess();
                 }, error -> {
                     Log.i(TAG, "error");

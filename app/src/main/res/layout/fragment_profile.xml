@@ -29,13 +29,21 @@
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="username" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProfilePlaylists"
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/pullRefreshLayout"
+        android:layout_below="@id/ivProfileImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ivProfileImage"
-        android:layout_margin="5dp"
-        />
+        android:layout_margin="8dp"
+        app:refreshType="water_drop">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProfilePlaylists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ivProfileImage"
+            android:layout_margin="5dp"
+            />
+    </com.baoyz.widget.PullRefreshLayout>
 
 
 </RelativeLayout>

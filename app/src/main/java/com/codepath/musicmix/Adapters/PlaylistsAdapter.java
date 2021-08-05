@@ -146,7 +146,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                         GestureDetector gestureDetector = new GestureDetector(context.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
                             @Override
                             public boolean onDoubleTap(MotionEvent e) {
-                                Toast.makeText(context.getApplicationContext(), "Double tap", Toast.LENGTH_SHORT).show();
                                 if ((int)btnLike.getTag() == R.drawable.ic_ufi_heart) {
                                     Like newLike = new Like();
                                     newLike.setPlaylistId(playlist.getObjectId());
@@ -169,7 +168,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                                         }
                                     });
                                 } else {
-                                    //Log.d("PlaylistsAdapter", "Unliked!");
                                     ParseQuery<ParseObject> query = ParseQuery.getQuery("Like");
                                     String likeObjectId = "";
                                     int likeIndex = -1;
@@ -211,7 +209,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
                             @Override
                             public boolean onSingleTapConfirmed(MotionEvent e) {
-                                //Toast.makeText(context.getApplicationContext(), "item clicked!", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "playlist clicked!");
                                 Intent i = new Intent(context, PlaylistDetailActivity.class);
                                 i.putExtra("Playlist", Parcels.wrap(playlist));
@@ -253,7 +250,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                                     }
                                 });
                             } else {
-                                //Log.d("PlaylistsAdapter", "Unliked!");
                                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Like");
                                 String likeObjectId = "";
                                 int likeIndex = -1;

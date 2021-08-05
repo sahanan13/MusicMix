@@ -109,10 +109,10 @@ public class SongService implements MusicMixAlgorithmConstants {
         }
 
         // getting tracks for keywords
+        // used stacked onSuccess methods because not possible to query for multiple words at the same time in Spotify Web API
         getTracks(keyword1, new VolleyCallBack() {
             @Override
             public void onSuccess() {
-                //Log.d(TAG, userChoice + " getTracks1 Success!");
                 getTracks(keyword2, new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
@@ -226,7 +226,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         if (optionsObject.getOption2().equals(OPTION_RELAXING)) {
             filterRelaxingTracks(optionsObject, userId);
             Log.d(TAG, "Relax Success!");
-            //option3Filter(optionsObject, userId);
         } else if (optionsObject.getOption2().equals(OPTION_PARTY)) {
             filterPartyTracks(optionsObject, userId);
             Log.d(TAG, "Party success!");
@@ -244,7 +243,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         if (optionsObject.getOption3().equals(OPTION_INSTRUMENTALS)) {
             filterInstrumentalTracks(optionsObject, userId);
             Log.d(TAG, "Instrumental Success!");
-            //    option4Filter(optionsObject, userId);
         } else if (optionsObject.getOption3().equals(OPTION_ELECTRONIC)) {
             filterElectronicTracks(optionsObject, userId);
             Log.d(TAG, "Electronic Success!");
@@ -259,7 +257,6 @@ public class SongService implements MusicMixAlgorithmConstants {
         if (optionsObject.getOption4().equals(OPTION_MOTIVATIONAL)) {
             filterMotivationalTracks(optionsObject, userId);
             Log.d(TAG, "Motivational Success!");
-            //    option5Filter(optionsObject, userId);
         } else if (optionsObject.getOption4().equals(OPTION_CALMING)) {
             filterCalmingTracks(optionsObject, userId);
             Log.d(TAG, "Calming Success!");
@@ -381,7 +378,6 @@ public class SongService implements MusicMixAlgorithmConstants {
             double danceability = currentSong.getDanceability();
             if (danceability < RELAXING_DANCEABILITY) {
                 selectedSongs.add(currentSong);
-                //Log.d(TAG, "Relaxing song: " + currentSong.getName());
             } else {
                 Log.d(TAG, "Not relaxing song: " + currentSong.getName());
             }
@@ -587,7 +583,6 @@ public class SongService implements MusicMixAlgorithmConstants {
             }
         }
         songs = selectedSongs;
-        //createPlaylist(optionsObject, userId);
         return;
     }
 
