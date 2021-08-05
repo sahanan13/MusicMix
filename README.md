@@ -26,17 +26,22 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
 
 **Required Must-have Stories**
 
-* [ ] User can log in
-* [ ] User is able to answer questions in questionnaire
-* [ ] Using the results of the questionnaire, a playlist can be generated for the user
-* [ ] The playlist has similar music according to the user's tastes
-* [ ] The user can like the playlist (heart button)
-* [ ] User can save playlist to their Spotify
-* [ ] User can logout
-* [ ] User can sign up for a Spotify account if they don't have one
+* [x] User can log in
+* [x] User is able to answer questions in questionnaire
+* [x] Using the results of the questionnaire, a playlist can be generated for the user
+* [x] The playlist has similar music according to the user's tastes
+* [x] The user can like the playlist (heart button)
+* [x] User can save playlist to their Spotify
+* [x] User can logout
+* [x] User can sign up for an account if they don't have one
 
 **Optional Nice-to-have Stories**
 
+* [x] User can see playlist images in home/profile screen
+* [x] User can see profile screen with their username, picture, and playlists
+* [x] User can view a detail view of playlists and the list of songs in the playlist
+* [ ] User can "refresh" to generate a new playlist if they don't like the playlist that was generated
+* [ ] User can open Spotify from app
 * [ ] User can share playlist with friends
 * [ ] User can add friends on the app
 * [ ] User can also generate separate playlists based on genres
