@@ -28,6 +28,45 @@
         android:textColor="@color/black"
         android:textSize="24dp" />
 
+    <Button
+        android:id="@+id/btnLikeDetail"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/tvPlaylistName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="249dp"
+        android:layout_toEndOf="@+id/ivPlaylistImage"
+        android:background="@drawable/ic_ufi_heart"
+        app:backgroundTint="#000000" />
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/tvPlaylistName"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="203dp"
+        android:background="@drawable/ic_edit"
+        app:backgroundTint="#000000" />
+
+    <Button
+        android:id="@+id/btnRefresh"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/tvPlaylistName"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="157dp"
+        android:background="@drawable/ic_refresh"
+        app:backgroundTint="#000000" />
+
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="wrap_content"
@@ -78,48 +117,61 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSongs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="225dp"
         android:layout_below="@+id/tvSongsTitle"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="5dp" />
 
-    <Button
-        android:id="@+id/btnLikeDetail"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_below="@+id/tvPlaylistName"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="19dp"
+    <TextView
+        android:id="@+id/tvOptionsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rvSongs"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="249dp"
-        android:layout_toEndOf="@+id/ivPlaylistImage"
-        android:background="@drawable/ic_ufi_heart"
-        app:backgroundTint="#000000" />
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:text="Options:" />
 
-    <Button
-        android:id="@+id/btnEdit"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_below="@+id/tvPlaylistName"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="203dp"
-        android:background="@drawable/ic_edit"
-        app:backgroundTint="#000000" />
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvOptionsTitle"
+        app:chipSpacingVertical="0dp"
+        android:layout_marginBottom="8dp">
 
-    <Button
-        android:id="@+id/btnRefresh"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_below="@+id/tvPlaylistName"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="157dp"
-        android:background="@drawable/ic_refresh"
-        app:backgroundTint="#000000" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/option1Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="option1" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/option2Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="option2"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/option3Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="option3"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/option4Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="option4"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/option5Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="option5"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
 
 </RelativeLayout>

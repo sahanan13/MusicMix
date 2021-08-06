@@ -55,7 +55,7 @@ public class SongService implements MusicMixAlgorithmConstants {
         return songs;
     }
 
-    public void getPlaylistTracks(String userId, Options optionsObject) {
+    public void getPlaylistTracks(String userId, Options optionsObject, String offset) {
         String keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10;
         String userChoice;
         if (optionsObject.getOption1().equals(OPTION_HAPPY)) {
@@ -110,34 +110,34 @@ public class SongService implements MusicMixAlgorithmConstants {
 
         // getting tracks for keywords
         // used stacked onSuccess methods because not possible to query for multiple words at the same time in Spotify Web API
-        getTracks(keyword1, new VolleyCallBack() {
+        getTracks(keyword1, offset, new VolleyCallBack() {
             @Override
             public void onSuccess() {
-                getTracks(keyword2, new VolleyCallBack() {
+                getTracks(keyword2, offset, new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
-                        getTracks(keyword3, new VolleyCallBack() {
+                        getTracks(keyword3, offset, new VolleyCallBack() {
                             @Override
                             public void onSuccess() {
-                                getTracks(keyword4, new VolleyCallBack() {
+                                getTracks(keyword4, offset, new VolleyCallBack() {
                                     @Override
                                     public void onSuccess() {
-                                        getTracks(keyword5, new VolleyCallBack() {
+                                        getTracks(keyword5, offset, new VolleyCallBack() {
                                             @Override
                                             public void onSuccess() {
-                                                getTracks(keyword6, new VolleyCallBack() {
+                                                getTracks(keyword6, offset, new VolleyCallBack() {
                                                     @Override
                                                     public void onSuccess() {
-                                                        getTracks(keyword7, new VolleyCallBack() {
+                                                        getTracks(keyword7, offset, new VolleyCallBack() {
                                                             @Override
                                                             public void onSuccess() {
-                                                                getTracks(keyword8, new VolleyCallBack() {
+                                                                getTracks(keyword8, offset, new VolleyCallBack() {
                                                                     @Override
                                                                     public void onSuccess() {
-                                                                        getTracks(keyword9, new VolleyCallBack() {
+                                                                        getTracks(keyword9, offset, new VolleyCallBack() {
                                                                             @Override
                                                                             public void onSuccess() {
-                                                                                getTracks(keyword10, new VolleyCallBack() {
+                                                                                getTracks(keyword10, offset, new VolleyCallBack() {
                                                                                     @Override
                                                                                     public void onSuccess() {
                                                                                         Log.d(TAG, userChoice + " all getTracks Success!");
@@ -276,8 +276,8 @@ public class SongService implements MusicMixAlgorithmConstants {
     }
 
 
-    public ArrayList<Song> getTracks(String keyword, final VolleyCallBack callBack) {
-        String endpoint = "https://api.spotify.com/v1/search?q=" + keyword + "&type=track&market=US&limit=50&offset=0";
+    public ArrayList<Song> getTracks(String keyword, String offset, final VolleyCallBack callBack) {
+        String endpoint = "https://api.spotify.com/v1/search?q=" + keyword + "&type=track&market=US&limit=50&offset=" + offset;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, endpoint, null, response -> {
                     JSONObject jsonObject = response.optJSONObject("tracks");

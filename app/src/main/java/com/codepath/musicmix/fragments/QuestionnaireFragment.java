@@ -140,7 +140,7 @@ public class QuestionnaireFragment extends Fragment {
     //method to get tracks and create playlist
     private void getQuestionnaireTracks(Options optionsObject, String userId) {
         Log.d(TAG, "getTracks called");
-        songService.getPlaylistTracks(userId, optionsObject); //asynchronous callback
+        songService.getPlaylistTracks(userId, optionsObject, "0"); //asynchronous callback
     }
 
     public void goHomeFragment() {

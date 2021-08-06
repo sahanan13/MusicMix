@@ -23,10 +23,12 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.codepath.musicmix.Adapters.PlaylistsAdapter;
 import com.codepath.musicmix.Adapters.SongsAdapter;
+import com.codepath.musicmix.connectors.SongService;
 import com.codepath.musicmix.models.Like;
 import com.codepath.musicmix.models.Options;
 import com.codepath.musicmix.models.Playlist;
 import com.codepath.musicmix.models.Song;
+import com.google.android.material.chip.Chip;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -59,6 +61,10 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
     private RequestQueue queue;
     private Button btnLikeDetail, btnEdit, btnRefresh;
     private List<Like> likes;
+    private Chip option1Chip, option2Chip, option3Chip, option4Chip, option5Chip;
+    private SongService songService;
+    String option1, option2, option3, option4, option5;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,11 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
         btnLikeDetail = findViewById(R.id.btnLikeDetail);
         btnEdit = findViewById(R.id.btnEdit);
         btnRefresh = findViewById(R.id.btnRefresh);
+        option1Chip = findViewById(R.id.option1Chip);
+        option2Chip = findViewById(R.id.option2Chip);
+        option3Chip = findViewById(R.id.option3Chip);
+        option4Chip = findViewById(R.id.option4Chip);
+        option5Chip = findViewById(R.id.option5Chip);
 
         sharedPreferences = this.getSharedPreferences("SPOTIFY", 0);
         queue = Volley.newRequestQueue(this);
@@ -87,6 +98,18 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
         tvCreatedAt.setText("Created at: " + playlist.getCreatedDate());
         tvNumSongsDetails.setText(playlist.getNumSongs() + " songs");
         Glide.with(this).load(playlist.getImageUrl()).into(ivPlaylistImage);
+
+        option1 = playlist.getKeyOption1();
+        option2 = playlist.getKeyOption2();
+        option3 = playlist.getKeyOption3();
+        option4 = playlist.getKeyOption4();
+        option5 = playlist.getKeyOption5();
+
+        option1Chip.setText(option1);
+        option2Chip.setText(option2);
+        option3Chip.setText(option3);
+        option4Chip.setText(option4);
+        option5Chip.setText(option5);
 
         allSongs = new ArrayList<>();
 
@@ -185,6 +208,22 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
                     @Override
                     public void onClick(View v) {
                         openDialog(tvPlaylistName.getText().toString(), playlist.getDescription(), playlist);
+                    }
+                });
+
+                //to allow user to generate new playlist with same options but different songs
+                btnRefresh.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(PlaylistDetailActivity.this, "Generating new playlist...", Toast.LENGTH_SHORT).show();
+                        songService = new SongService(getApplicationContext());
+
+                        userId = sharedPreferences.getString("userid", "none");
+
+                        //creating object for user's answers
+                        ParseUser currentUser = ParseUser.getCurrentUser();
+                        Options optionsObject = new Options(option1, option2, option3, option4, option5, currentUser);
+                        songService.getPlaylistTracks(userId, optionsObject, "50");
                     }
                 });
             }
