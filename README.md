@@ -40,7 +40,7 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
 * [x] User can see playlist images in home/profile screen
 * [x] User can see profile screen with their username, picture, and playlists
 * [x] User can view a detail view of playlists and the list of songs in the playlist
-* [ ] User can "refresh" to generate a new playlist if they don't like the playlist that was generated
+* [x] User can "refresh" to generate a new playlist if they don't like the playlist that was generated
 * [ ] User can open Spotify from app
 * [ ] User can share playlist with friends
 * [ ] User can add friends on the app
@@ -139,6 +139,14 @@ Users can fill out a questionnaire about their mood/feelings that day and app wi
     - (Read/GET) Query information about playlist object
     - (Create/POST) Create a new like if user likes playlist
     - (Delete) Delete the like if user unlikes the playlist
+
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with [LiceCap](https://www.cockos.com/licecap/).
 
 [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
