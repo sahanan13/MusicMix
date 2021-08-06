@@ -129,7 +129,7 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
 
                 btnLikeDetail.setTag(R.drawable.ic_ufi_heart);
                 btnLikeDetail.setBackground(PlaylistDetailActivity.this.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                btnLikeDetail.setBackgroundTintList(PlaylistDetailActivity.this.getResources().getColorStateList(R.color.black));
+                btnLikeDetail.setBackgroundTintList(PlaylistDetailActivity.this.getResources().getColorStateList(R.color.white));
 
                 for (int i = 0; i < likes.size(); i++) {
                     if ((playlist.getObjectId()).equals(likes.get(i).getPlaylistId())) {
@@ -187,7 +187,7 @@ public class PlaylistDetailActivity extends AppCompatActivity implements EditDia
                                             Log.d(TAG, "Delete Successful");
                                             btnLikeDetail.setTag(R.drawable.ic_ufi_heart);
                                             btnLikeDetail.setBackground(PlaylistDetailActivity.this.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                                            btnLikeDetail.setBackgroundTintList(PlaylistDetailActivity.this.getResources().getColorStateList(R.color.black));
+                                            btnLikeDetail.setBackgroundTintList(PlaylistDetailActivity.this.getResources().getColorStateList(R.color.white));
                                             likes.remove(finalLikeIndex);
                                         }else{
                                             //Something went wrong while deleting the Object

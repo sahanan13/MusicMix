@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
+    android:background="#3b3b3b"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+
         app:menu="@menu/menu_bottom_navigation" />
 
 </RelativeLayout>

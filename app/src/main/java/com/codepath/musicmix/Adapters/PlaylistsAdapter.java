@@ -132,7 +132,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                     Glide.with(context).load(playlist.getImageUrl()).into(ivPlaylistimg);
                     btnLike.setTag(R.drawable.ic_ufi_heart);
                     btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                    btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.black));
+                    btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.white));
 
                     for (int i = 0; i < likes.size(); i++) {
                         if ((playlist.getObjectId()).equals(likes.get(i).getPlaylistId())) {
@@ -191,7 +191,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                                                     Log.d(TAG, "Delete Successful");
                                                     btnLike.setTag(R.drawable.ic_ufi_heart);
                                                     btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                                                    btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.black));
+                                                    btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.white));
                                                     likes.remove(finalLikeIndex);
                                                 }else{
                                                     //Something went wrong while deleting the Object
@@ -273,7 +273,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                                                 Log.d(TAG, "Delete Successful");
                                                 btnLike.setTag(R.drawable.ic_ufi_heart);
                                                 btnLike.setBackground(context.getResources().getDrawable(R.drawable.ic_ufi_heart));
-                                                btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.black));
+                                                btnLike.setBackgroundTintList(context.getResources().getColorStateList(R.color.white));
                                                 likes.remove(finalLikeIndex);
                                             }else{
                                                 //Something went wrong while deleting the Object

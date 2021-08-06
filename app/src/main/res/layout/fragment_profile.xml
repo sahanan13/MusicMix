@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#3b3b3b"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,10 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
-        android:text="usename"
+        android:text="username"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="34sp"
         android:layout_toEndOf="@+id/ivProfileImage"
+        android:textColor="@color/white"
         tools:text="username" />
 
     <com.baoyz.widget.PullRefreshLayout

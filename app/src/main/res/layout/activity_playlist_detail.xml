@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:padding="10dp"
+    android:background="#3b3b3b"
     tools:context=".PlaylistDetailActivity">
 
     <ImageView
@@ -25,7 +26,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:text="Playlist Title"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="24dp" />
 
     <Button
@@ -39,7 +40,7 @@
         android:layout_marginEnd="249dp"
         android:layout_toEndOf="@+id/ivPlaylistImage"
         android:background="@drawable/ic_ufi_heart"
-        app:backgroundTint="#000000" />
+        app:backgroundTint="#FFFFFF" />
 
     <Button
         android:id="@+id/btnEdit"
@@ -52,7 +53,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="203dp"
         android:background="@drawable/ic_edit"
-        app:backgroundTint="#000000" />
+        app:backgroundTint="#FFFFFF" />
 
     <Button
         android:id="@+id/btnRefresh"
@@ -65,7 +66,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="157dp"
         android:background="@drawable/ic_refresh"
-        app:backgroundTint="#000000" />
+        app:backgroundTint="#FFFFFF" />
 
     <TextView
         android:id="@+id/tvDescription"
@@ -74,6 +75,7 @@
         android:layout_below="@+id/ivPlaylistImage"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
+        android:textColor="#b0b3b8"
         android:text="Description" />
     <TextView
         android:id="@+id/tvCreatedBy"
@@ -82,6 +84,7 @@
         android:layout_below="@+id/tvDescription"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
+        android:textColor="#b0b3b8"
         android:text="Created by:" />
 
     <TextView
@@ -91,6 +94,7 @@
         android:layout_below="@+id/tvCreatedBy"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
+        android:textColor="#b0b3b8"
         android:text="Created at:" />
 
     <TextView
@@ -100,7 +104,7 @@
         android:layout_below="@+id/tvCreatedAt"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
-        android:textColor="@color/black"
+        android:textColor="#b0b3b8"
         android:text="X songs" />
 
     <TextView
@@ -110,7 +114,7 @@
         android:layout_below="@+id/tvNumSongsDetails"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18dp"
         android:text="Songs:" />
 
@@ -130,7 +134,7 @@
         android:layout_below="@+id/rvSongs"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18dp"
         android:text="Options:" />
 
