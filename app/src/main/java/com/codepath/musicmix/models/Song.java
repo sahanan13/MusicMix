@@ -1,6 +1,8 @@
 package com.codepath.musicmix.models;
 
-public class Song {
+import com.codepath.musicmix.MusicMixAlgorithmConstants;
+
+public class Song implements MusicMixAlgorithmConstants {
     private String id;
     private String name;
     private String uri;
@@ -117,4 +119,89 @@ public class Song {
     public void setEnergy(double energy) {
         this.energy = energy;
     }
+
+    public boolean isRelaxing() {
+        if (danceability < RELAXING_DANCEABILITY) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isParty() {
+        if (danceability >= PARTYING_DANCEABILITY) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isExercising() {
+        if (danceability >= EXERCISING_DANCEABILITY_LOW && danceability < EXERCISING_DANCEABILITY_HIGH) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isWorking() {
+        if (danceability >= WORKING_DANCEABILITY_LOW && danceability < WORKING_DANCEABILITY_HIGH) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInstrumental() {
+        if (instrumentalness >= INSTRUMENTAL_INSTRUMENTALNESS) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isElectronic() {
+        if (acousticness <= ELECTRONIC_ACOUSTICNESS) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isVocal() {
+        if (instrumentalness <= VOCAL_INSTRUMENTALNESS) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isMotivational() {
+        if (tempo >= MOTIVATIONAL_TEMPO) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isCalming() {
+        if (loudness >= CALMING_LOUDNESS) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isCheerful() {
+        if (valence >= CHEERFUL_VALENCE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isSorrowful() {
+        if (valence <= SORROWFUL_VALENCE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInEnergyLevels(double energyLow, double energyHigh) {
+        if (energy > energyLow && energy <= energyHigh) {
+            return true;
+        }
+        return false;
+    }
+
 }

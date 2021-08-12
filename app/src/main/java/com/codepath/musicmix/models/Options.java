@@ -1,11 +1,12 @@
 package com.codepath.musicmix.models;
 
+import com.codepath.musicmix.MusicMixAlgorithmConstants;
 import com.parse.ParseUser;
 
 import org.parceler.Parcel;
 
 @Parcel
-public class Options {
+public class Options implements MusicMixAlgorithmConstants {
     private String option1;
     private String option2;
     private String option3;
@@ -92,5 +93,20 @@ public class Options {
     }
     public boolean isScale_5() {
         return isScale("5");
+    }
+
+    public String[] getOptions1Keywords() {
+        String[] keywordArray;
+        if (option1.equals(OPTION_HAPPY)) {
+            keywordArray = KEYWORDS_HAPPY;
+        } else if (option1.equals(OPTION_ANGRY)) {
+            keywordArray = KEYWORDS_ANGRY;
+        } else if (option1.equals(OPTION_SAD)) {
+            keywordArray = KEYWORDS_SAD;
+        } else {                //Nervous
+            keywordArray = KEYWORDS_NERVOUS;
+        }
+
+        return keywordArray;
     }
 }

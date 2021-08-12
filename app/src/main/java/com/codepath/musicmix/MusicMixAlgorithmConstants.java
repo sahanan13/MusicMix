@@ -8,6 +8,11 @@ public interface MusicMixAlgorithmConstants {
     public static final String OPTION_SAD = "Sad";
     public static final String OPTION_NERVOUS = "Nervous";
 
+    public static final String[] KEYWORDS_HAPPY = new String[] {"happy", "sunshine", "good", "fun", "danc", "sun", "dream", "beautiful", "live", "excited"};
+    public static final String[] KEYWORDS_ANGRY = new String[] {"break", "hate", "hell", "angry", "never", "kill", "anger", "misery", "revenge", "mad"};
+    public static final String[] KEYWORDS_SAD = new String[] {"sad", "hurt", "loved", "wreck", "goodbye", "heart", "cry", "tear", "burn", "broken"};
+    public static final String[] KEYWORDS_NERVOUS = new String[] {"nervous", "save", "fake", "breath", "lonely", "lost", "calm%20down", "stress", "numb", "mind"};
+
     // Question 2 option constants
     public static final String OPTION_RELAXING = "Relaxing";
     public static final String OPTION_PARTY = "Going out / Partying";
